@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Pass - Fête Louise Thérèse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --pitch-green: #064e3b;
+            --pitch-light: #047857;
+            --gold-primary: #fbbf24;
+            --gold-light: #fde68a;
+            --gold-dark: #b45309;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle at 50% -20%, #1e293b, #020617);
+            color: #334155;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .font-oswald {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+        }
+
+        @keyframes sweep {
+            0% { transform: translateX(-100%) skewX(-15deg); }
+            100% { transform: translateX(200%) skewX(-15deg); }
+        }
+
+        @keyframes floatBall {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(10deg); }
+        }
+
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+            animation: sweep 3s infinite;
+        }
+
+        .ticket-container {
+            filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.5));
+            transition: transform 0.3s ease;
+        }
+        
+        .ticket-container:hover {
+            transform: translateY(-5px) scale(1.01);
+        }
+
+        .ticket-left {
+            background: linear-gradient(135deg, var(--pitch-green), var(--pitch-light));
+            position: relative;
+            border-right: 2px dashed rgba(255,255,255,0.3);
+        }
+
+        /* Lignes du terrain de foot en fond */
+        .ticket-left::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Encoches du billet */
+        .notch-top, .notch-bottom {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #020617; /* Doit correspondre au body bg */
+            border-radius: 50%;
+            right: -15px;
+            z-index: 10;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .notch-top { top: -15px; }
+        .notch-bottom { bottom: -15px; }
+
+        @media (max-width: 768px) {
+            .ticket-left { border-right: none; border-bottom: 2px dashed rgba(255,255,255,0.3); }
+            .notch-top, .notch-bottom { display: none; }
+        }
+
+        .gold-text {
+            background: linear-gradient(to right, var(--gold-light), var(--gold-primary), var(--gold-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gold-border {
+            border: 1px solid var(--gold-primary);
+        }
+
+        /* Bouton premium interactif */
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .btn-gold:hover {
+            box-shadow: 0 10px 20px rgba(251, 191, 36, 0.4);
+            transform: translateY(-2px);
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        #playful-ball {
+            transition: left 0.6s cubic-bezier(0.25, 1, 0.5, 1), top 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s ease;
+            filter: drop-shadow(0 12px 10px rgba(0,0,0,0.4));
+        }
+        #playful-ball:hover {
+            transform: scale(1.15) rotate(15deg);
+        }
+        .ball-kick {
+            animation: kickEffect 0.5s ease-out;
+        }
+        @keyframes kickEffect {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+        .ball-badge {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            background: #fbbf24;
+            color: #064e3b;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 800;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            border: 2px solid white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .kick-spark {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkOut 0.6s ease-out forwards;
+        }
+        @keyframes sparkOut {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        /* Custom Scrollbar decoration for Registered list */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
+
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none"></div>
+    <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-green-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none"></div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <main class="w-full max-w-5xl z-10 ticket-container relative">
+        
+        <div class="flex flex-col md:flex-row bg-white rounded-2xl overflow-hidden shadow-2xl relative">
+            
+            <!-- Interactive Dribble Football -->
+            <div id="playful-ball" class="absolute z-50 cursor-pointer w-12 h-12 flex items-center justify-center select-none group" style="left: 28%; top: 22%;">
+                <span class="ball-badge hidden">0</span>
+                <!-- Custom micro-tooltip to attract user engagement -->
+                <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded whitespace-nowrap opacity-100 pointer-events-none transition-opacity duration-500 shadow-md border border-slate-700">
+                    Dribble-moi ! ⚽
+                </div>
+                <!-- Crisp high-performance SVG Football design -->
+                <svg class="w-full h-full" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="256" cy="256" r="240" fill="#FFFFFF" stroke="#1E293B" stroke-width="16"/>
+                    <polygon points="256,190 318,235 294,308 218,308 194,235" fill="#1E293B"/>
+                    <line x1="256" y1="190" x2="256" y2="16" stroke="#1E293B" stroke-width="16"/>
+                    <line x1="318" y1="235" x2="484" y2="135" stroke="#1E293B" stroke-width="16"/>
+                    <line x1="294" y1="308" x2="397" y2="473" stroke="#1E293B" stroke-width="16"/>
+                    <line x1="218" y1="308" x2="115" y2="473" stroke="#1E293B" stroke-width="16"/>
+                    <line x1="194" y1="235" x2="28" y2="135" stroke="#1E293B" stroke-width="16"/>
+                    <polygon points="256,16 190,64 322,64" fill="#1E293B"/>
+                    <polygon points="484,135 460,210 400,160" fill="#1E293B"/>
+                    <polygon points="397,473 320,440 420,380" fill="#1E293B"/>
+                    <polygon points="115,473 192,440 92,380" fill="#1E293B"/>
+                    <polygon points="28,135 52,210 112,160" fill="#1E293B"/>
+                </svg>
+            </div>
+
+            <!-- Left VIP Ticket Segment -->
+            <div class="ticket-left w-full md:w-1/3 p-8 flex flex-col justify-between items-center text-center relative overflow-hidden text-white">
+                <div class="notch-top hidden md:block"></div>
+                <div class="notch-bottom hidden md:block"></div>
+
+                <!-- Badge VIP -->
+                <div class="w-full flex justify-between items-start mb-6">
+                    <span class="text-xs font-bold tracking-widest text-green-200 uppercase">Saison 2026</span>
+                    <span class="bg-amber-400 text-green-900 text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-widest shimmer">Pass VIP</span>
+                </div>
+
+                <!-- Floating center crest -->
+                <div class="relative w-32 h-32 my-6" style="animation: floatBall 6s ease-in-out infinite;">
+                    <svg class="absolute inset-0 w-full h-full text-amber-400 opacity-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.67-3.13 8.9-7 10.02-3.87-1.12-7-5.35-7-10.02V6.3l7-3.12z"/></svg>
+                    <svg class="absolute inset-0 w-full h-full drop-shadow-2xl text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" fill="currentColor" fill-opacity="0.1"></circle>
+                        <path d="M12 12l3.5 2.5m-3.5-2.5l-3.5 2.5m3.5-2.5V8m-4.5 9l1-3m8 3l-1-3m-7-6l-2-1m10 1l2-1" stroke="currentColor" stroke-width="2"></path>
+                        <path d="M12 2a10 10 0 0 1 10 10 10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2z" stroke="currentColor" stroke-width="2"></path>
+                    </svg>
+                </div>
+
+                <div class="space-y-4 w-full">
+                    <h2 class="font-oswald text-4xl gold-text font-bold tracking-wider leading-tight">Coupe<br>du Monde</h2>
+                    <div class="h-px w-16 bg-amber-400 mx-auto opacity-50"></div>
+                    <div class="font-oswald text-2xl tracking-widest text-green-100">Édition Spéciale</div>
+                </div>
+
+                <div class="mt-8 bg-green-900/50 border border-green-400/30 w-full p-4 rounded-xl backdrop-blur-sm">
+                    <div class="text-3xl font-oswald text-amber-400 mb-1">30 JUIN</div>
+                    <div class="text-sm tracking-widest uppercase text-green-100 font-semibold">À partir de 17h30</div>
+                </div>
+            </div>
+
+            <!-- Right Information & Form Segment -->
+            <div class="w-full md:w-2/3 p-8 md:p-12 relative bg-[#f8fafc]">
+                
+                <svg class="absolute bottom-0 right-0 w-64 h-64 text-slate-200 opacity-50 transform translate-x-1/4 translate-y-1/4 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+
+                <div class="relative z-10">
+                    <p class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2 flex items-center">
+                        <span class="w-8 h-px bg-amber-500 mr-2"></span> Invitation Officielle
+                    </p>
+                    <h1 class="text-3xl md:text-5xl font-oswald font-bold text-slate-800 mb-6 uppercase leading-tight">
+                        Fête <span class="text-green-700">Louise Thérèse</span>
+                    </h1>
+                    
+                    <p class="text-slate-600 mb-4 text-lg font-medium">Chères familles, chers proches,</p>
+                    <p class="text-slate-600 mb-8 leading-relaxed">
+                        Toute l'équipe de la résidence a le plaisir de vous convier à notre traditionnelle fête. Cette année, nous vous proposons de <strong>vibrer ensemble au rythme du sport</strong> ! Venez partager ce moment festif et convivial autour d'un repas gourmand.
+                    </p>
+
+                    <!-- Festive Menu -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center group hover:border-green-500 transition-colors">
+                            <div class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xl mr-4 group-hover:scale-110 transition-transform shadow-inner">🥂</div>
+                            <span class="font-semibold text-slate-700">Apéritif de bienvenue</span>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center group hover:border-green-500 transition-colors">
+                            <div class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xl mr-4 group-hover:scale-110 transition-transform shadow-inner">🥗</div>
+                            <span class="font-semibold text-slate-700">Salade fraîcheur</span>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center group hover:border-amber-500 transition-colors">
+                            <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-xl mr-4 group-hover:scale-110 transition-transform shadow-inner">🔥</div>
+                            <span class="font-semibold text-slate-700">Grand Barbecue</span>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center group hover:border-amber-500 transition-colors">
+                            <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center text-xl mr-4 group-hover:scale-110 transition-transform shadow-inner">🍦</div>
+                            <span class="font-semibold text-slate-700">Glace Italienne</span>
+                        </div>
+                    </div>
+
+                    <!-- Price & Dress Code details -->
+                    <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                        <div class="flex-1 bg-slate-800 text-white p-5 rounded-xl border border-slate-700 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-16 h-16 bg-white opacity-5 transform rotate-45 translate-x-8 -translate-y-8"></div>
+                            <div class="text-xs text-slate-400 uppercase tracking-wider mb-1">Tarif Pass Repas</div>
+                            <div class="font-oswald text-3xl gold-text">13 € <span class="text-sm text-slate-300 font-sans normal-case">/ pers.</span></div>
+                        </div>
+                        
+                        <div class="flex-[2] bg-gradient-to-r from-blue-50 via-white to-red-50 p-5 rounded-xl border border-slate-200">
+                            <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 flex items-center">
+                                <svg class="w-4 h-4 mr-1 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                                Dress Code (Optionnel)
+                            </div>
+                            <p class="text-sm text-slate-700 leading-snug">
+                                Jouez le jeu ! Venez habillés avec vos maillots, accessoires de supporters, ou simplement en <span class="text-blue-600 font-bold">Bleu</span>, <span class="text-slate-400 font-bold">Blanc</span>, <span class="text-red-600 font-bold">Rouge</span> !
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Form / Confirmation -->
+                    <div class="bg-white p-6 rounded-xl border-2 border-slate-100 shadow-sm relative">
+                        <h3 class="font-oswald text-xl text-slate-800 mb-4 flex justify-between items-center">
+                            Confirmer sa sélection
+                            <span class="text-xs font-sans text-amber-600 bg-amber-50 px-2 py-1 rounded font-bold">Avant le 14 Juin 2026</span>
+                        </h3>
+                        
+                        <form id="rsvp-form" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Nom / Famille</label>
+                                    <input type="text" id="name" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors outline-none font-medium text-slate-700" placeholder="Ex: Dupont">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Participants</label>
+                                    <div class="relative">
+                                        <select id="guests" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors outline-none font-medium text-slate-700 appearance-none">
+                                            <option value="0">❌ Je passe mon tour</option>
+                                            <option value="1" selected>⚽ 1 personne</option>
+                                            <option value="2">⚽ 2 personnes</option>
+                                            <option value="3">⚽ 3 personnes</option>
+                                            <option value="4">⚽ 4 personnes</option>
+                                            <option value="5">🏆 5 personnes ou +</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="w-full btn-gold font-oswald text-xl py-4 rounded-lg flex justify-center items-center gap-2 shimmer">
+                                VALIDER LE PASS
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </button>
+                        </form>
+
+                        <!-- Success message inside the flyer -->
+                        <div id="success-message" class="hidden text-center py-6">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-500 mb-4 animate-bounce">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <h4 class="font-oswald text-2xl text-slate-800 mb-2">SÉLECTION ENREGISTRÉE !</h4>
+                            <p class="text-slate-600 text-sm">Votre place sur le terrain est validée. Votre nom a été ajouté à la liste en direct ci-dessous !</p>
+                        </div>
+
+                        <!-- Real-time Guest List widget -->
+                        <div class="mt-6 pt-6 border-t border-slate-100">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center justify-between">
+                                <span>Inscriptions en direct 🏟️</span>
+                                <span id="total-guests-badge" class="bg-green-100 text-green-700 text-[11px] font-bold px-2.5 py-0.5 rounded-full">0 inscrit(s)</span>
+                            </h4>
+                            <div id="rsvp-list-container" class="max-h-36 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                                <p class="text-xs text-slate-400 italic text-center py-4" id="no-rsvp-placeholder">
+                                    Connexion en cours aux vestiaires... ⏳
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading dynamic Firebase module configuration safely -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global context variables parsed safely
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('rsvp-form');
+            const successMsg = document.getElementById('success-message');
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            const totalGuestsBadge = document.getElementById('total-guests-badge');
+            const rsvpListContainer = document.getElementById('rsvp-list-container');
+            const noRsvpPlaceholder = document.getElementById('no-rsvp-placeholder');
+            
+            // Handle canvas sizing dynamically
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // Confetti structures
+            let particles = [];
+            const colors = ['#047857', '#fbbf24', '#1d4ed8', '#ffffff', '#dc2626'];
+
+            function createConfetti() {
+                particles = [];
+                for (let i = 0; i < 150; i++) {
+                    particles.push({
+                        x: canvas.width / 2,
+                        y: canvas.height / 2 + 100,
+                        r: Math.random() * 6 + 2,
+                        dx: Math.random() * 20 - 10,
+                        dy: Math.random() * -20 - 5,
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                        tilt: Math.random() * 10,
+                        tiltAngle: 0,
+                        tiltAngleInc: (Math.random() * 0.07) + 0.05
+                    });
+                }
+            }
+
+            let confettiAnimationId = null;
+            function animateConfetti() {
+                confettiAnimationId = requestAnimationFrame(animateConfetti);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                for (let i = 0; i < particles.length; i++) {
+                    let p = particles[i];
+                    p.tiltAngle += p.tiltAngleInc;
+                    p.y += (Math.cos(p.tiltAngle) + 1 + p.r / 2) / 2;
+                    p.x += Math.sin(p.tiltAngle) * 2;
+                    p.dy += 0.1;
+                    p.y += p.dy;
+                    p.x += p.dx;
+
+                    ctx.beginPath();
+                    ctx.lineWidth = p.r;
+                    ctx.strokeStyle = p.color;
+                    ctx.moveTo(p.x + p.tilt + p.r, p.y);
+                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r);
+                    ctx.stroke();
+                }
+            }
+
+            // Playful Ball Logic (Click to dribble)
+            const ball = document.getElementById('playful-ball');
+            const badge = ball.querySelector('.ball-badge');
+            const ballTooltip = ball.querySelector('div');
+            let juggleCount = 0;
+
+            setTimeout(() => {
+                ballTooltip.style.opacity = '0';
+            }, 3500);
+
+            ball.addEventListener('click', () => {
+                juggleCount++;
+                badge.textContent = juggleCount;
+                badge.classList.remove('hidden');
+
+                ball.classList.add('ball-kick');
+                setTimeout(() => {
+                    ball.classList.remove('ball-kick');
+                }, 500);
+
+                createSparks();
+
+                let minX = 8, maxX = 88;
+                let minY = 8, maxY = 88;
+
+                if (window.innerWidth < 768) {
+                    maxX = 82;
+                    maxY = 82;
+                }
+
+                const randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+                const randomY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+
+                ball.style.left = `${randomX}%`;
+                ball.style.top = `${randomY}%`;
+
+                const randomRotation = Math.floor(Math.random() * 720) - 360;
+                ball.style.transform = `rotate(${randomRotation}deg) scale(1.1)`;
+                setTimeout(() => {
+                    ball.style.transform = `rotate(${randomRotation}deg) scale(1)`;
+                }, 500);
+            });
+
+            function createSparks() {
+                const ballRect = ball.getBoundingClientRect();
+                const container = ball.parentElement;
+                const containerRect = container.getBoundingClientRect();
+
+                const ballCenterX = ballRect.left - containerRect.left + ballRect.width / 2;
+                const ballCenterY = ballRect.top - containerRect.top + ballRect.height / 2;
+
+                for (let i = 0; i < 8; i++) {
+                    const spark = document.createElement('div');
+                    spark.className = 'kick-spark';
+                    
+                    const angle = (Math.PI * 2 / 8) * i + (Math.random() * 0.4 - 0.2);
+                    const distance = Math.random() * 45 + 20;
+                    const tx = Math.cos(angle) * distance;
+                    const ty = Math.sin(angle) * distance;
+
+                    spark.style.left = `${ballCenterX - 4}px`;
+                    spark.style.top = `${ballCenterY - 4}px`;
+                    spark.style.setProperty('--tx', `${tx}px`);
+                    spark.style.setProperty('--ty', `${ty}px`);
+                    
+                    spark.style.background = Math.random() > 0.5 ? '#fbbf24' : '#10b981';
+
+                    container.appendChild(spark);
+
+                    setTimeout(() => {
+                        spark.remove();
+                    }, 600);
+                }
+            }
+
+            // --- Real-time Cloud Storage & Auth Integration ---
+            
+            // 1. Authenticate user anonymously/custom token on load (Rule 3)
+            const initAuth = async () => {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (e) {
+                    console.error("Auth initialization failed", e);
+                }
+            };
+            initAuth();
+
+            // Track Auth state changes to download live lists
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                if (user) {
+                    subscribeToRSVPs(user);
+                }
+            });
+
+            // 2. Fetch and render Real-time RSVP List (Rule 1 & Rule 2)
+            function subscribeToRSVPs(user) {
+                if (!user) return;
+                
+                // Construct target strict path (Rule 1)
+                const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
+                
+                onSnapshot(rsvpsRef, (snapshot) => {
+                    let totalGuests = 0;
+                    let rsvpListHtml = '';
+                    let hasEntries = false;
+
+                    const docs = [];
+                    snapshot.forEach((doc) => {
+                        docs.push({ id: doc.id, ...doc.data() });
+                    });
+
+                    // Sort documents in JavaScript memory to avoid complex Index queries (Rule 2)
+                    docs.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+
+                    docs.forEach((data) => {
+                        hasEntries = true;
+                        const guestCount = parseInt(data.guests) || 0;
+                        totalGuests += guestCount;
+
+                        if (guestCount > 0) {
+                            const nameHtml = escapeHTML(data.name);
+                            const badgeColor = guestCount >= 5 ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-green-50 text-green-700 border-green-100';
+                            const badgeIcon = guestCount >= 5 ? '🏆' : '⚽';
+                            
+                            rsvpListHtml += `
+                                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100 transition-all hover:bg-slate-100">
+                                    <span class="font-medium text-slate-700 text-sm flex items-center gap-1.5">
+                                        👤 Famille ${nameHtml}
+                                    </span>
+                                    <span class="text-xs font-bold px-2 py-0.5 rounded-full border ${badgeColor} flex items-center gap-1">
+                                        ${badgeIcon} ${guestCount} ${guestCount > 1 ? 'pers.' : 'pers.'}
+                                    </span>
+                                </div>
+                            `;
+                        } else {
+                            // Declined RSVP tracking
+                            const nameHtml = escapeHTML(data.name);
+                            rsvpListHtml += `
+                                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100 opacity-60">
+                                    <span class="text-slate-500 text-sm italic">
+                                        Famille ${nameHtml}
+                                    </span>
+                                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200">
+                                        Passé tour ❌
+                                    </span>
+                                </div>
+                            `;
+                        }
+                    });
+
+                    if (hasEntries) {
+                        if (noRsvpPlaceholder) noRsvpPlaceholder.classList.add('hidden');
+                        rsvpListContainer.innerHTML = rsvpListHtml;
+                    } else {
+                        rsvpListContainer.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-4">Aucun inscrit pour l'instant. Lancez la partie !</p>`;
+                    }
+
+                    // Update total score badge
+                    totalGuestsBadge.textContent = `${totalGuests} supporter(s) inscrit(s)`;
+                }, (error) => {
+                    console.error("Firestore read error: ", error);
+                });
+            }
+
+            // HTML Escaper helper
+            function escapeHTML(str) {
+                return str.replace(/[&<>'"]/g, 
+                    tag => ({
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        "'": '&#39;',
+                        '"': '&quot;'
+                    }[tag] || tag)
+                );
+            }
+
+            // 3. Save RSVP registration in Cloud Firestore
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const nameValue = document.getElementById('name').value.trim();
+                const guestsValue = document.getElementById('guests').value;
+                const isAttending = guestsValue !== "0";
+
+                // Ensure auth is complete
+                if (!currentUser) {
+                    showErrorBox("Connexion en cours, veuillez patienter un instant...");
+                    return;
+                }
+
+                const submitButton = form.querySelector('button[type="submit"]');
+                const originalButtonContent = submitButton.innerHTML;
+                
+                // Show dynamic loading state
+                submitButton.disabled = true;
+                submitButton.innerHTML = `Enregistrement... <svg class="animate-spin h-5 w-5 ml-2 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+
+                try {
+                    const rsvpData = {
+                        name: nameValue,
+                        guests: parseInt(guestsValue),
+                        timestamp: new Date().toISOString()
+                    };
+
+                    const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
+                    await addDoc(rsvpsRef, rsvpData);
+
+                    // Successful transition
+                    form.style.transition = 'opacity 0.3s, transform 0.3s';
+                    form.style.opacity = '0';
+                    form.style.transform = 'scale(0.95)';
+                    
+                    setTimeout(() => {
+                        form.classList.add('hidden');
+                        successMsg.classList.remove('hidden');
+                        
+                        if (isAttending) {
+                            createConfetti();
+                            if (!confettiAnimationId) {
+                                animateConfetti();
+                            }
+                        } else {
+                            successMsg.innerHTML = `
+                                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 text-slate-500 mb-4">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <h4 class="font-oswald text-2xl text-slate-800 mb-2">C'EST NOTÉ !</h4>
+                                <p class="text-slate-600">Votre réponse a bien été prise en compte. À bientôt !</p>
+                            `;
+                        }
+                    }, 300);
+
+                } catch (error) {
+                    console.error("Cloud saving error: ", error);
+                    // Reset validation button
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = originalButtonContent;
+                    showErrorBox("Une erreur s'est produite. Merci de réessayer !");
+                }
+            });
+
+            // Beautiful non-blocking error banner customizer
+            function showErrorBox(message) {
+                const errorBox = document.createElement('div');
+                errorBox.className = "absolute top-4 left-4 right-4 bg-red-500 text-white px-4 py-3 rounded-xl shadow-lg z-50 text-sm font-semibold transition-all flex items-center gap-2";
+                errorBox.innerHTML = `⚠️ ${message}`;
+                document.body.appendChild(errorBox);
+                setTimeout(() => errorBox.remove(), 4000);
+            }
+        });
+    </script>
+</body>
+</html>
