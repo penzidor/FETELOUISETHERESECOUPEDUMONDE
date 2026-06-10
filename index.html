@@ -88,7 +88,7 @@
             position: absolute;
             width: 30px;
             height: 30px;
-            background-color: #020617; /* Doit correspondre au body bg */
+            background-color: #020617;
             border-radius: 50%;
             right: -15px;
             z-index: 10;
@@ -107,10 +107,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-        }
-
-        .gold-border {
-            border: 1px solid var(--gold-primary);
         }
 
         /* Bouton premium interactif */
@@ -179,12 +175,12 @@
             100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
         }
 
-        /* Custom Scrollbar decoration for Registered list */
         .custom-scrollbar::-webkit-scrollbar {
-            width: 5px;
+            width: 6px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
+            background: #f1f5f9;
+            border-radius: 9999px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #cbd5e1;
@@ -195,25 +191,25 @@
         }
     </style>
 </head>
-<body class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
+<body class="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative min-h-screen">
 
-    <div class="fixed top-0 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none"></div>
-    <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-green-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20 pointer-events-none"></div>
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-[120px] opacity-25 pointer-events-none"></div>
+    <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-green-500 rounded-full mix-blend-screen filter blur-[120px] opacity-25 pointer-events-none"></div>
 
     <canvas id="confetti-canvas"></canvas>
+
+    <!-- Custom Notification Toast System (No alerts) -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
 
     <main class="w-full max-w-5xl z-10 ticket-container relative">
         
         <div class="flex flex-col md:flex-row bg-white rounded-2xl overflow-hidden shadow-2xl relative">
             
-            <!-- Interactive Dribble Football -->
             <div id="playful-ball" class="absolute z-50 cursor-pointer w-12 h-12 flex items-center justify-center select-none group" style="left: 28%; top: 22%;">
                 <span class="ball-badge hidden">0</span>
-                <!-- Custom micro-tooltip to attract user engagement -->
                 <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-bold px-2 py-1 rounded whitespace-nowrap opacity-100 pointer-events-none transition-opacity duration-500 shadow-md border border-slate-700">
                     Dribble-moi ! ⚽
                 </div>
-                <!-- Crisp high-performance SVG Football design -->
                 <svg class="w-full h-full" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="256" cy="256" r="240" fill="#FFFFFF" stroke="#1E293B" stroke-width="16"/>
                     <polygon points="256,190 318,235 294,308 218,308 194,235" fill="#1E293B"/>
@@ -264,11 +260,11 @@
             </div>
 
             <!-- Right Information & Form Segment -->
-            <div class="w-full md:w-2/3 p-8 md:p-12 relative bg-[#f8fafc]">
+            <div class="w-full md:w-2/3 p-8 md:p-12 relative bg-[#f8fafc] flex flex-col justify-between">
                 
                 <svg class="absolute bottom-0 right-0 w-64 h-64 text-slate-200 opacity-50 transform translate-x-1/4 translate-y-1/4 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
 
-                <div class="relative z-10">
+                <div class="relative z-10 w-full">
                     <p class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2 flex items-center">
                         <span class="w-8 h-px bg-amber-500 mr-2"></span> Invitation Officielle
                     </p>
@@ -357,59 +353,177 @@
                             </button>
                         </form>
 
-                        <!-- Success message inside the flyer -->
+                        <!-- Success message inside the flyer (Completely Private) -->
                         <div id="success-message" class="hidden text-center py-6">
                             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-500 mb-4 animate-bounce">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                             </div>
                             <h4 class="font-oswald text-2xl text-slate-800 mb-2">SÉLECTION ENREGISTRÉE !</h4>
-                            <p class="text-slate-600 text-sm">Votre place sur le terrain est validée. Votre nom a été ajouté à la liste en direct ci-dessous !</p>
+                            <p class="text-slate-600 text-sm">Votre place sur le terrain est validée. Merci de votre confirmation !</p>
+                            <button id="reset-form-btn" class="mt-4 text-xs font-semibold text-green-600 hover:text-green-800 underline">Enregistrer une autre famille</button>
                         </div>
-
-                        <!-- Real-time Guest List widget -->
-                        <div class="mt-6 pt-6 border-t border-slate-100">
-                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center justify-between">
-                                <span>Inscriptions en direct 🏟️</span>
-                                <span id="total-guests-badge" class="bg-green-100 text-green-700 text-[11px] font-bold px-2.5 py-0.5 rounded-full">0 inscrit(s)</span>
-                            </h4>
-                            <div id="rsvp-list-container" class="max-h-36 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
-                                <p class="text-xs text-slate-400 italic text-center py-4" id="no-rsvp-placeholder">
-                                    Connexion en cours aux vestiaires... ⏳
-                                </p>
-                            </div>
-                        </div>
-
                     </div>
+                </div>
 
+                <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end w-full relative z-20">
+                    <button id="admin-access-btn" class="text-xs font-semibold text-slate-400 hover:text-green-600 flex items-center gap-1 transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        Espace Organisateur
+                    </button>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Loading dynamic Firebase module configuration safely -->
+    <div id="password-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100">
+            <div class="text-center mb-4">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-50 text-amber-500 mb-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                </div>
+                <h3 class="font-oswald text-xl text-slate-800">Accès Sécurisé</h3>
+                <p class="text-xs text-slate-500">Veuillez entrer le mot de passe organisateur</p>
+            </div>
+            <form id="password-form" class="space-y-3">
+                <input type="password" id="admin-password" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-center font-bold tracking-widest text-slate-800" placeholder="••••••••">
+                <p id="password-error" class="text-xs text-red-500 text-center font-semibold hidden">Mot de passe incorrect ❌</p>
+                <div class="flex gap-2">
+                    <button type="button" id="close-password-btn" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold py-2.5 rounded-lg transition-colors">Annuler</button>
+                    <button type="submit" class="flex-1 btn-gold text-sm font-semibold py-2.5 rounded-lg">Se connecter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="admin-dashboard-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 md:p-8 hidden">
+        <div class="bg-white rounded-2xl max-w-4xl w-full h-[90vh] md:h-[80vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
+            <!-- Dashboard Header -->
+            <div class="p-6 bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h3 class="font-oswald text-2xl gold-text flex items-center gap-2">
+                        <span>🏟️ Espace Organisateur</span>
+                        <span class="text-xs font-sans uppercase font-bold bg-green-500 text-slate-900 px-2.5 py-0.5 rounded">Session Live</span>
+                    </h3>
+                    <p class="text-xs text-slate-400">Gérez en direct les participants à la Fête Louise Thérèse 2026</p>
+                </div>
+                <div class="flex gap-2">
+                    <button id="export-csv-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Exporter Excel/CSV
+                    </button>
+                    <button id="close-admin-btn" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors">
+                        Fermer x
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-3 border-b border-slate-100 bg-slate-50 text-center divide-x divide-slate-100">
+                <div class="p-4">
+                    <div class="text-2xl font-oswald text-green-700" id="stat-total-guests">0</div>
+                    <div class="text-[10px] text-slate-500 uppercase font-bold">Total Personnes</div>
+                </div>
+                <div class="p-4">
+                    <div class="text-2xl font-oswald text-blue-600" id="stat-total-families">0</div>
+                    <div class="text-[10px] text-slate-500 uppercase font-bold">Familles Présentes</div>
+                </div>
+                <div class="p-4">
+                    <div class="text-2xl font-oswald text-red-500" id="stat-total-declined">0</div>
+                    <div class="text-[10px] text-slate-500 uppercase font-bold">Désistements</div>
+                </div>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="p-4 border-b border-slate-100 flex items-center bg-white">
+                <div class="relative w-full max-w-md">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </span>
+                    <input type="text" id="admin-search" class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-green-500" placeholder="Rechercher une famille...">
+                </div>
+            </div>
+
+            <!-- Main Live RSVP List -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-[#f8fafc] custom-scrollbar">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-100 text-[10px] text-slate-500 uppercase font-bold tracking-wider">
+                                <th class="p-4">Nom / Famille</th>
+                                <th class="p-4 text-center">Participants</th>
+                                <th class="p-4 hidden sm:table-cell">Date d'inscription</th>
+                                <th class="p-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-list-body" class="divide-y divide-slate-100 text-sm text-slate-600">
+                            <tr>
+                                <td colspan="4" class="p-8 text-center text-slate-400 italic">
+                                    Chargement des données... ⏳
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global context variables parsed safely
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        // Global context variables fallback configuration (Rule 1 & 3)
+        let db = null;
+        let auth = null;
+        let appId = 'default-app-id';
+        let useFirebase = false;
+
+        // In-memory local database backup for offline or test previews
+        let localRSVPs = [];
+
+        try {
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                useFirebase = true;
+            }
+        } catch (e) {
+            console.error("Firebase connection blocked or unavailable, using robust Local Engine:", e);
+        }
 
         let currentUser = null;
+        let activeRSVPs = []; // Local mirror of dynamic RSVP data
 
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('rsvp-form');
             const successMsg = document.getElementById('success-message');
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
-            const totalGuestsBadge = document.getElementById('total-guests-badge');
-            const rsvpListContainer = document.getElementById('rsvp-list-container');
-            const noRsvpPlaceholder = document.getElementById('no-rsvp-placeholder');
+            const resetFormBtn = document.getElementById('reset-form-btn');
             
+            // Administrative & Security hooks
+            const adminAccessBtn = document.getElementById('admin-access-btn');
+            const passwordModal = document.getElementById('password-modal');
+            const passwordForm = document.getElementById('password-form');
+            const adminPasswordInput = document.getElementById('admin-password');
+            const passwordError = document.getElementById('password-error');
+            const closePasswordBtn = document.getElementById('close-password-btn');
+            
+            const adminDashboardModal = document.getElementById('admin-dashboard-modal');
+            const closeAdminBtn = document.getElementById('close-admin-btn');
+            const adminListBody = document.getElementById('admin-list-body');
+            const adminSearchInput = document.getElementById('admin-search');
+            const exportCsvBtn = document.getElementById('export-csv-btn');
+
+            // Metrics references
+            const statTotalGuests = document.getElementById('stat-total-guests');
+            const statTotalFamilies = document.getElementById('stat-total-families');
+            const statTotalDeclined = document.getElementById('stat-total-declined');
+
             // Handle canvas sizing dynamically
             function resizeCanvas() {
                 canvas.width = window.innerWidth;
@@ -537,10 +651,13 @@
                 }
             }
 
-            // --- Real-time Cloud Storage & Auth Integration ---
-            
-            // 1. Authenticate user anonymously/custom token on load (Rule 3)
+            // --- STREAMING_CHUNK: Cloud Engine Connection & Authentication ---
             const initAuth = async () => {
+                if (!useFirebase) {
+                    // Start in memory simulation
+                    syncLocalDatabase();
+                    return;
+                }
                 try {
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         await signInWithCustomToken(auth, __initial_auth_token);
@@ -548,115 +665,82 @@
                         await signInAnonymously(auth);
                     }
                 } catch (e) {
-                    console.error("Auth initialization failed", e);
+                    console.error("Auth initialization failed, using secure fallback local engine", e);
+                    useFirebase = false;
+                    syncLocalDatabase();
                 }
             };
             initAuth();
 
             // Track Auth state changes to download live lists
-            onAuthStateChanged(auth, (user) => {
-                currentUser = user;
-                if (user) {
-                    subscribeToRSVPs(user);
-                }
-            });
+            if (useFirebase) {
+                onAuthStateChanged(auth, (user) => {
+                    currentUser = user;
+                    if (user) {
+                        subscribeToRSVPs(user);
+                    }
+                });
+            }
 
-            // 2. Fetch and render Real-time RSVP List (Rule 1 & Rule 2)
+            // --- STREAMING_CHUNK: Dynamic Data Syncing ---
             function subscribeToRSVPs(user) {
-                if (!user) return;
+                if (!user || !useFirebase) return;
                 
                 // Construct target strict path (Rule 1)
                 const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
                 
                 onSnapshot(rsvpsRef, (snapshot) => {
-                    let totalGuests = 0;
-                    let rsvpListHtml = '';
-                    let hasEntries = false;
-
-                    const docs = [];
+                    activeRSVPs = [];
                     snapshot.forEach((doc) => {
-                        docs.push({ id: doc.id, ...doc.data() });
+                        activeRSVPs.push({ id: doc.id, ...doc.data() });
                     });
 
                     // Sort documents in JavaScript memory to avoid complex Index queries (Rule 2)
-                    docs.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-
-                    docs.forEach((data) => {
-                        hasEntries = true;
-                        const guestCount = parseInt(data.guests) || 0;
-                        totalGuests += guestCount;
-
-                        if (guestCount > 0) {
-                            const nameHtml = escapeHTML(data.name);
-                            const badgeColor = guestCount >= 5 ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-green-50 text-green-700 border-green-100';
-                            const badgeIcon = guestCount >= 5 ? '🏆' : '⚽';
-                            
-                            rsvpListHtml += `
-                                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100 transition-all hover:bg-slate-100">
-                                    <span class="font-medium text-slate-700 text-sm flex items-center gap-1.5">
-                                        👤 Famille ${nameHtml}
-                                    </span>
-                                    <span class="text-xs font-bold px-2 py-0.5 rounded-full border ${badgeColor} flex items-center gap-1">
-                                        ${badgeIcon} ${guestCount} ${guestCount > 1 ? 'pers.' : 'pers.'}
-                                    </span>
-                                </div>
-                            `;
-                        } else {
-                            // Declined RSVP tracking
-                            const nameHtml = escapeHTML(data.name);
-                            rsvpListHtml += `
-                                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100 opacity-60">
-                                    <span class="text-slate-500 text-sm italic">
-                                        Famille ${nameHtml}
-                                    </span>
-                                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200">
-                                        Passé tour ❌
-                                    </span>
-                                </div>
-                            `;
-                        }
-                    });
-
-                    if (hasEntries) {
-                        if (noRsvpPlaceholder) noRsvpPlaceholder.classList.add('hidden');
-                        rsvpListContainer.innerHTML = rsvpListHtml;
-                    } else {
-                        rsvpListContainer.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-4">Aucun inscrit pour l'instant. Lancez la partie !</p>`;
+                    activeRSVPs.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+                    
+                    // Render current state in admin board if it is open
+                    if (!adminDashboardModal.classList.contains('hidden')) {
+                        renderAdminList();
                     }
-
-                    // Update total score badge
-                    totalGuestsBadge.textContent = `${totalGuests} supporter(s) inscrit(s)`;
                 }, (error) => {
-                    console.error("Firestore read error: ", error);
+                    console.error("Firestore loading error, running Local Core:", error);
+                    useFirebase = false;
+                    syncLocalDatabase();
                 });
             }
 
-            // HTML Escaper helper
-            function escapeHTML(str) {
-                return str.replace(/[&<>'"]/g, 
-                    tag => ({
-                        '&': '&amp;',
-                        '<': '&lt;',
-                        '>': '&gt;',
-                        "'": '&#39;',
-                        '"': '&quot;'
-                    }[tag] || tag)
-                );
+            // Local fallback replication
+            function syncLocalDatabase() {
+                // Read from memory storage or generate mockup for testing environment
+                const saved = localStorage.getItem('local_rsvps_therese');
+                if (saved) {
+                    activeRSVPs = JSON.parse(saved);
+                } else {
+                    // Populate initial elegant dummy data for mockup testing
+                    activeRSVPs = [
+                        { id: '1', name: 'Martin', guests: 3, timestamp: new Date(Date.now() - 3600000 * 4).toISOString() },
+                        { id: '2', name: 'Dubois', guests: 2, timestamp: new Date(Date.now() - 3600000 * 24).toISOString() },
+                        { id: '3', name: 'Lefebvre', guests: 5, timestamp: new Date(Date.now() - 3600000 * 48).toISOString() },
+                        { id: '4', name: 'Moreau', guests: 0, timestamp: new Date(Date.now() - 3600000 * 72).toISOString() }
+                    ];
+                    saveLocalState();
+                }
+                if (!adminDashboardModal.classList.contains('hidden')) {
+                    renderAdminList();
+                }
             }
 
-            // 3. Save RSVP registration in Cloud Firestore
+            function saveLocalState() {
+                localStorage.setItem('local_rsvps_therese', JSON.stringify(activeRSVPs));
+            }
+
+            // --- STREAMING_CHUNK: Save New Confirmation ---
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
                 const nameValue = document.getElementById('name').value.trim();
                 const guestsValue = document.getElementById('guests').value;
                 const isAttending = guestsValue !== "0";
-
-                // Ensure auth is complete
-                if (!currentUser) {
-                    showErrorBox("Connexion en cours, veuillez patienter un instant...");
-                    return;
-                }
 
                 const submitButton = form.querySelector('button[type="submit"]');
                 const originalButtonContent = submitButton.innerHTML;
@@ -665,17 +749,24 @@
                 submitButton.disabled = true;
                 submitButton.innerHTML = `Enregistrement... <svg class="animate-spin h-5 w-5 ml-2 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
 
+                const rsvpData = {
+                    name: nameValue,
+                    guests: parseInt(guestsValue),
+                    timestamp: new Date().toISOString()
+                };
+
                 try {
-                    const rsvpData = {
-                        name: nameValue,
-                        guests: parseInt(guestsValue),
-                        timestamp: new Date().toISOString()
-                    };
+                    if (useFirebase && currentUser) {
+                        const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
+                        await addDoc(rsvpsRef, rsvpData);
+                    } else {
+                        // Secure Local DB save
+                        rsvpData.id = crypto.randomUUID();
+                        activeRSVPs.unshift(rsvpData);
+                        saveLocalState();
+                    }
 
-                    const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
-                    await addDoc(rsvpsRef, rsvpData);
-
-                    // Successful transition
+                    // Successful visual transition
                     form.style.transition = 'opacity 0.3s, transform 0.3s';
                     form.style.opacity = '0';
                     form.style.transform = 'scale(0.95)';
@@ -696,26 +787,288 @@
                                 </div>
                                 <h4 class="font-oswald text-2xl text-slate-800 mb-2">C'EST NOTÉ !</h4>
                                 <p class="text-slate-600">Votre réponse a bien été prise en compte. À bientôt !</p>
+                                <button id="reset-form-btn-declined" class="mt-4 text-xs font-semibold text-slate-500 hover:text-slate-800 underline">Enregistrer une autre famille</button>
                             `;
+                            // Hook up the reset button for declined cases as well
+                            document.getElementById('reset-form-btn-declined').addEventListener('click', resetRSVPForm);
                         }
                     }, 300);
 
+                    showNotification("Confirmation enregistrée avec succès !", "success");
+
                 } catch (error) {
-                    console.error("Cloud saving error: ", error);
-                    // Reset validation button
+                    console.error("Registration error: ", error);
                     submitButton.disabled = false;
                     submitButton.innerHTML = originalButtonContent;
-                    showErrorBox("Une erreur s'est produite. Merci de réessayer !");
+                    showNotification("Impossible de valider. Merci de réessayer !", "error");
                 }
             });
 
-            // Beautiful non-blocking error banner customizer
-            function showErrorBox(message) {
-                const errorBox = document.createElement('div');
-                errorBox.className = "absolute top-4 left-4 right-4 bg-red-500 text-white px-4 py-3 rounded-xl shadow-lg z-50 text-sm font-semibold transition-all flex items-center gap-2";
-                errorBox.innerHTML = `⚠️ ${message}`;
-                document.body.appendChild(errorBox);
-                setTimeout(() => errorBox.remove(), 4000);
+            // Resets the flyer form to submit another family name safely
+            function resetRSVPForm() {
+                form.reset();
+                form.classList.remove('hidden');
+                form.style.opacity = '1';
+                form.style.transform = 'scale(1)';
+                successMsg.classList.add('hidden');
+                
+                // Stop any playing confetti to save processor resources
+                if (confettiAnimationId) {
+                    cancelAnimationFrame(confettiAnimationId);
+                    confettiAnimationId = null;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            resetFormBtn.addEventListener('click', resetRSVPForm);
+
+            // --- STREAMING_CHUNK: Admin & Password Management ---
+            adminAccessBtn.addEventListener('click', () => {
+                passwordModal.classList.remove('hidden');
+                adminPasswordInput.focus();
+            });
+
+            closePasswordBtn.addEventListener('click', () => {
+                passwordModal.classList.add('hidden');
+                passwordForm.reset();
+                passwordError.classList.add('hidden');
+            });
+
+            passwordForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const inputPass = adminPasswordInput.value.trim();
+
+                if (inputPass === "LYON") {
+                    passwordModal.classList.add('hidden');
+                    passwordForm.reset();
+                    passwordError.classList.add('hidden');
+                    
+                    // Grant access to Admin Dashboard
+                    adminDashboardModal.classList.remove('hidden');
+                    renderAdminList();
+                    showNotification("Connexion réussie à l'espace organisateur !", "success");
+                } else {
+                    passwordError.classList.remove('hidden');
+                    adminPasswordInput.select();
+                }
+            });
+
+            closeAdminBtn.addEventListener('click', () => {
+                adminDashboardModal.classList.add('hidden');
+            });
+
+            // --- STREAMING_CHUNK: Dynamic Admin Panel Renderer ---
+            function renderAdminList() {
+                const searchFilter = adminSearchInput.value.toLowerCase().trim();
+                let tbodyHtml = '';
+                
+                let sumGuests = 0;
+                let sumFamilies = 0;
+                let sumDeclined = 0;
+
+                // Filter items
+                const filtered = activeRSVPs.filter(item => {
+                    const matchName = item.name.toLowerCase().includes(searchFilter);
+                    return matchName;
+                });
+
+                // Calculate Statistics
+                activeRSVPs.forEach(item => {
+                    if (item.guests > 0) {
+                        sumGuests += item.guests;
+                        sumFamilies++;
+                    } else {
+                        sumDeclined++;
+                    }
+                });
+
+                // Write Stats inside Organisateur Panels
+                statTotalGuests.textContent = sumGuests;
+                statTotalFamilies.textContent = sumFamilies;
+                statTotalDeclined.textContent = sumDeclined;
+
+                if (filtered.length === 0) {
+                    tbodyHtml = `
+                        <tr>
+                            <td colspan="4" class="p-8 text-center text-slate-400 italic bg-white">
+                                Aucun participant ne correspond à votre recherche... 🔍
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    filtered.forEach((item, index) => {
+                        const displayDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString('fr-FR', {
+                            day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit'
+                        }) : 'N/C';
+
+                        tbodyHtml += `
+                            <tr class="hover:bg-slate-50 transition-colors bg-white">
+                                <td class="p-4 font-bold text-slate-800">
+                                    Famille ${escapeHTML(item.name)}
+                                </td>
+                                <td class="p-4 text-center">
+                                    <div class="inline-flex items-center gap-2 bg-slate-100 rounded-lg p-1.5 border border-slate-200">
+                                        <button onclick="window.updateGuests('${item.id}', -1)" class="w-7 h-7 bg-white hover:bg-red-500 hover:text-white rounded flex items-center justify-center font-bold text-slate-600 transition-all active:scale-95 shadow-xs">-</button>
+                                        <span class="w-10 text-center font-extrabold text-slate-800 text-sm">
+                                            ${item.guests > 0 ? '⚽ ' + item.guests : '❌ Abs.'}
+                                        </span>
+                                        <button onclick="window.updateGuests('${item.id}', 1)" class="w-7 h-7 bg-white hover:bg-green-600 hover:text-white rounded flex items-center justify-center font-bold text-slate-600 transition-all active:scale-95 shadow-xs">+</button>
+                                    </div>
+                                </td>
+                                <td class="p-4 text-xs text-slate-400 hidden sm:table-cell">
+                                    ${displayDate}
+                                </td>
+                                <td class="p-4 text-right">
+                                    <button onclick="window.deleteEntry('${item.id}')" class="text-xs font-bold text-red-500 hover:text-white hover:bg-red-500 px-3 py-1.5 rounded-lg border border-red-200 hover:border-transparent transition-all flex items-center gap-1 ml-auto">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        Retirer
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                adminListBody.innerHTML = tbodyHtml;
+            }
+
+            // Real-time Search input binding
+            adminSearchInput.addEventListener('input', renderAdminList);
+
+            // --- STREAMING_CHUNK: Admin Actions (Modify & Delete) ---
+            window.updateGuests = async (id, change) => {
+                const target = activeRSVPs.find(item => item.id === id);
+                if (!target) return;
+
+                let newCount = target.guests + change;
+                if (newCount < 0) newCount = 0; // limit floor
+                if (newCount > 20) newCount = 20; // limit ceiling
+
+                if (newCount === target.guests) return;
+
+                try {
+                    if (useFirebase && currentUser) {
+                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'rsvps', id);
+                        await updateDoc(docRef, { guests: newCount });
+                    } else {
+                        // Local storage modifications
+                        target.guests = newCount;
+                        saveLocalState();
+                        renderAdminList();
+                    }
+                    showNotification(`Nombre d'inscrits pour la Famille ${target.name} modifié !`, "info");
+                } catch (error) {
+                    console.error("Update error: ", error);
+                    showNotification("Impossible de mettre à jour.", "error");
+                }
+            };
+
+            window.deleteEntry = async (id) => {
+                const target = activeRSVPs.find(item => item.id === id);
+                if (!target) return;
+
+                const confirmed = confirm(`Êtes-vous sûr de vouloir retirer définitivement la Famille ${target.name} de la liste ?`);
+                if (!confirmed) return;
+
+                try {
+                    if (useFirebase && currentUser) {
+                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'rsvps', id);
+                        await deleteDoc(docRef);
+                    } else {
+                        // Local storage delete
+                        activeRSVPs = activeRSVPs.filter(item => item.id !== id);
+                        saveLocalState();
+                        renderAdminList();
+                    }
+                    showNotification(`Famille ${target.name} retirée de la liste.`, "success");
+                } catch (error) {
+                    console.error("Deletion error: ", error);
+                    showNotification("Erreur lors de la suppression.", "error");
+                }
+            };
+
+            // --- STREAMING_CHUNK: CSV Data Exporter ---
+            exportCsvBtn.addEventListener('click', () => {
+                if (activeRSVPs.length === 0) {
+                    showNotification("Aucune donnée à exporter !", "error");
+                    return;
+                }
+
+                // Standardized CSV format
+                let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // Include BOM for proper French accent display in Excel
+                csvContent += "Nom / Famille;Nombre d'inscrits (0 = Absent);Date d'inscription\n";
+
+                activeRSVPs.forEach(item => {
+                    const cleanName = item.name.replace(/;/g, ',');
+                    const cleanDate = item.timestamp ? new Date(item.timestamp).toLocaleString('fr-FR') : 'Non renseignée';
+                    csvContent += `Famille ${cleanName};${item.guests};${cleanDate}\n`;
+                });
+
+                const encodedUri = encodeURI(csvContent);
+                const downloadLink = document.createElement("a");
+                downloadLink.setAttribute("href", encodedUri);
+                downloadLink.setAttribute("download", `Inscriptions_Fete_Louise_Therese_2026.csv`);
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+
+                showNotification("Fichier d'inscriptions téléchargé !", "success");
+            });
+
+            // HTML Escaper helper
+            function escapeHTML(str) {
+                return str.replace(/[&<>'"]/g, 
+                    tag => ({
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        "'": '&#39;',
+                        '"': '&quot;'
+                    }[tag] || tag)
+                );
+            }
+
+            // Custom Notification System UI
+            function showNotification(message, type = "success") {
+                const toast = document.createElement('div');
+                let bgClass = "bg-slate-800 border-slate-700";
+                let textIcon = "💡";
+
+                if (type === "success") {
+                    bgClass = "bg-green-600 border-green-500";
+                    textIcon = "🏆";
+                } else if (type === "error") {
+                    bgClass = "bg-red-600 border-red-500";
+                    textIcon = "⚠️";
+                } else if (type === "info") {
+                    bgClass = "bg-amber-500 border-amber-400";
+                    textIcon = "⚽";
+                }
+
+                toast.className = `${bgClass} text-white px-4 py-3 rounded-xl shadow-2xl border text-xs font-semibold flex items-center gap-2 select-none transform transition-all duration-300 translate-x-12 opacity-0 pointer-events-auto cursor-pointer`;
+                toast.innerHTML = `<span>${textIcon}</span> <span>${message}</span>`;
+                
+                document.getElementById('toast-container').appendChild(toast);
+
+                // Entrance animation
+                setTimeout(() => {
+                    toast.style.transform = 'translateX(0)';
+                    toast.style.opacity = '1';
+                }, 50);
+
+                // Auto remove trigger
+                const autoRemove = setTimeout(() => {
+                    toast.style.transform = 'translateX(12px)';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3500);
+
+                // Click to dismiss
+                toast.addEventListener('click', () => {
+                    clearTimeout(autoRemove);
+                    toast.style.transform = 'translateX(12px)';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                });
             }
         });
     </script>
