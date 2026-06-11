@@ -198,7 +198,6 @@
 
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- Custom Notification Toast System -->
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
 
     <main class="w-full max-w-5xl z-10 ticket-container relative">
@@ -226,18 +225,15 @@
                 </svg>
             </div>
 
-            <!-- Left VIP Ticket Segment -->
             <div class="ticket-left w-full md:w-1/3 p-8 flex flex-col justify-between items-center text-center relative overflow-hidden text-white">
                 <div class="notch-top hidden md:block"></div>
                 <div class="notch-bottom hidden md:block"></div>
 
-                <!-- Badge VIP -->
                 <div class="w-full flex justify-between items-start mb-6">
                     <span class="text-xs font-bold tracking-widest text-green-200 uppercase">Saison 2026</span>
                     <span class="bg-amber-400 text-green-900 text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-widest shimmer">Pass VIP</span>
                 </div>
 
-                <!-- Floating center crest -->
                 <div class="relative w-32 h-32 my-6" style="animation: floatBall 6s ease-in-out infinite;">
                     <svg class="absolute inset-0 w-full h-full text-amber-400 opacity-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.67-3.13 8.9-7 10.02-3.87-1.12-7-5.35-7-10.02V6.3l7-3.12z"/></svg>
                     <svg class="absolute inset-0 w-full h-full drop-shadow-2xl text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
@@ -259,7 +255,6 @@
                 </div>
             </div>
 
-            <!-- Right Information & Form Segment -->
             <div class="w-full md:w-2/3 p-8 md:p-12 relative bg-[#f8fafc] flex flex-col justify-between">
                 
                 <svg class="absolute bottom-0 right-0 w-64 h-64 text-slate-200 opacity-50 transform translate-x-1/4 translate-y-1/4 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
@@ -277,7 +272,6 @@
                         Toute l'équipe de la résidence a le plaisir de vous convier à notre traditionnelle fête. Cette année, nous vous proposons de <strong>vibrer ensemble au rythme du sport</strong> ! Venez partager ce moment festif et convivial autour d'un repas gourmand.
                     </p>
 
-                    <!-- Festive Menu -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                         <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center group hover:border-green-500 transition-colors">
                             <div class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xl mr-4 group-hover:scale-110 transition-transform shadow-inner">🥂</div>
@@ -297,7 +291,6 @@
                         </div>
                     </div>
 
-                    <!-- Price & Dress Code details -->
                     <div class="flex flex-col sm:flex-row gap-4 mb-8">
                         <div class="flex-1 bg-slate-800 text-white p-5 rounded-xl border border-slate-700 relative overflow-hidden">
                             <div class="absolute top-0 right-0 w-16 h-16 bg-white opacity-5 transform rotate-45 translate-x-8 -translate-y-8"></div>
@@ -316,7 +309,6 @@
                         </div>
                     </div>
 
-                    <!-- Form / Confirmation -->
                     <div class="bg-white p-6 rounded-xl border-2 border-slate-100 shadow-sm relative">
                         <h3 class="font-oswald text-xl text-slate-800 mb-4 flex justify-between items-center">
                             Confirmer sa sélection
@@ -353,7 +345,6 @@
                             </button>
                         </form>
 
-                        <!-- Success message inside the flyer -->
                         <div id="success-message" class="hidden text-center py-6">
                             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-500 mb-4 animate-bounce">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -397,20 +388,15 @@
 
     <div id="admin-dashboard-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 md:p-8 hidden">
         <div class="bg-white rounded-2xl max-w-4xl w-full h-[90vh] md:h-[80vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
-            <!-- Dashboard Header -->
             <div class="p-6 bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h3 class="font-oswald text-2xl gold-text flex items-center gap-2">
                         <span>Stadium - Espace Organisateur</span>
-                        <span id="sync-status-badge" class="text-xs font-sans uppercase font-bold bg-green-500 text-slate-900 px-2.5 py-0.5 rounded">● Serveur Cloud Connecté</span>
+                        <span id="sync-status-badge" class="text-xs font-sans uppercase font-bold bg-green-500 text-slate-900 px-2.5 py-0.5 rounded">● Live Cloud Connecté</span>
                     </h3>
-                    <p class="text-xs text-slate-400">ID Session : <span class="font-bold underline text-green-300">Louise-Therese-2026-Global</span></p>
+                    <p class="text-xs text-slate-400">ID Session : <span class="font-bold underline text-green-300">Louise-Therese-2026-Live</span></p>
                 </div>
                 <div class="flex gap-2 flex-wrap">
-                    <button id="refresh-admin-btn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"></path></svg>
-                        🔄 Synchroniser / Rafraîchir
-                    </button>
                     <button id="export-csv-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         Exporter Excel
@@ -421,7 +407,6 @@
                 </div>
             </div>
 
-            <!-- Stats Bar -->
             <div class="grid grid-cols-3 border-b border-slate-100 bg-slate-50 text-center divide-x divide-slate-100">
                 <div class="p-4">
                     <div class="text-2xl font-oswald text-green-700" id="stat-total-guests">0</div>
@@ -437,7 +422,6 @@
                 </div>
             </div>
 
-            <!-- Filter Controls -->
             <div class="p-4 border-b border-slate-100 flex items-center bg-white">
                 <div class="relative w-full max-w-md">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
@@ -447,7 +431,6 @@
                 </div>
             </div>
 
-            <!-- Main Live RSVP List -->
             <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-[#f8fafc] custom-scrollbar">
                 <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
                     <table class="w-full text-left border-collapse">
@@ -472,46 +455,29 @@
         </div>
     </div>
 
-    <!-- Zero-Config High-Performance Distributed Cloud Storage Driver -->
-    <script>
-        // Clé cloud partagée et optimisée sans aucun blocage CORS réseau
-        const CLOUD_DATABASE_URL = "https://kvdb.io/Lt2026FeteCoupeDuMondeOrganisateurBucket/rsvps_list";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // =======================================================================
+        // ⚙️ VOS CLÉS CLOUD FIREBASE CONNECTÉES EN DIRECT ⚙️
+        // =======================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDNku_18DSNC_b6XHv60K_J9dkknGDULj0",
+            authDomain: "louisetheresefete.firebaseapp.com",
+            projectId: "louisetheresefete",
+            storageBucket: "louisetheresefete.firebasestorage.app",
+            messagingSenderId: "860057435381",
+            appId: "1:860057435381:web:7247929b9d1562f6fbd9bc"
+        };
+        // =======================================================================
+
+        // Initialisation automatique des services de données cloud
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const rsvpsRef = collection(db, "rsvps_louise_therese_2026");
+
         let activeRSVPs = [];
-        const OFFLINE_CACHE_KEY = 'louise_therese_rsvps_offline_cache';
-
-        // Chargement initial sécurisé depuis le cloud vers l'interface
-        async function loadCloudDatabase() {
-            try {
-                const res = await fetch(CLOUD_DATABASE_URL);
-                if (res.ok) {
-                    const txt = await res.text();
-                    if (txt && txt.trim() !== "") {
-                        activeRSVPs = JSON.parse(txt);
-                        localStorage.setItem(OFFLINE_CACHE_KEY, txt);
-                        return;
-                    }
-                }
-            } catch (err) {
-                console.warn("Moteur cloud distant injoignable, bascule sur la mémoire cache locale :", err);
-            }
-            const localBackup = localStorage.getItem(OFFLINE_CACHE_KEY);
-            activeRSVPs = localBackup ? JSON.parse(localBackup) : [];
-        }
-
-        // Sauvegarde immédiate vers la base cloud globale
-        async function saveCloudDatabase() {
-            localStorage.setItem(OFFLINE_CACHE_KEY, JSON.stringify(activeRSVPs));
-            try {
-                await fetch(CLOUD_DATABASE_URL, {
-                    method: 'PUT',
-                    body: JSON.stringify(activeRSVPs)
-                });
-                return true;
-            } catch (err) {
-                console.error("Échec de synchronisation cloud :", err);
-                return false;
-            }
-        }
 
         document.addEventListener('DOMContentLoaded', async () => {
             const form = document.getElementById('rsvp-form');
@@ -530,7 +496,6 @@
             
             const adminDashboardModal = document.getElementById('admin-dashboard-modal');
             const closeAdminBtn = document.getElementById('close-admin-btn');
-            const refreshAdminBtn = document.getElementById('refresh-admin-btn');
             const adminListBody = document.getElementById('admin-list-body');
             const adminSearchInput = document.getElementById('admin-search');
             const exportCsvBtn = document.getElementById('export-csv-btn');
@@ -599,7 +564,7 @@
             let juggleCount = 0;
 
             setTimeout(() => {
-                ballTooltip.style.opacity = '0';
+                if(ballTooltip) ballTooltip.style.opacity = '0';
             }, 3500);
 
             ball.addEventListener('click', () => {
@@ -667,10 +632,24 @@
                 }
             }
 
-            // Lancement de la première synchronisation réseau
-            await loadCloudDatabase();
+            // --- SYNCHRONISATION LIVE CLOUD EN TEMPS RÉEL (MULTI-APPAREILS) ---
+            onSnapshot(rsvpsRef, (snapshot) => {
+                const fetched = [];
+                snapshot.forEach((doc) => {
+                    fetched.push({ id: doc.id, ...doc.data() });
+                });
 
-            // Submit form logic mapped to the pipeline
+                // Tri par date directement en mémoire vive
+                fetched.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                activeRSVPs = fetched;
+
+                // Actualise le tableau de bord automatiquement s'il est ouvert
+                renderAdminList();
+            }, (error) => {
+                console.error("Erreur d'écoute Firestore en temps réel :", error);
+            });
+
+            // Submit form logic mapped to Firebase
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
@@ -685,20 +664,14 @@
                 submitButton.innerHTML = `Enregistrement... <svg class="animate-spin h-5 w-5 ml-2 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
 
                 const rsvpItem = {
-                    id: crypto.randomUUID(),
                     name: nameValue,
                     guests: parseInt(guestsValue),
                     timestamp: new Date().toISOString()
                 };
 
                 try {
-                    // Télécharger les dernières entrées pour éviter de surcharger d'autres inscriptions simultanées
-                    await loadCloudDatabase();
-                    activeRSVPs.unshift(rsvpItem);
+                    await addDoc(rsvpsRef, rsvpItem);
 
-                    await saveCloudDatabase();
-
-                    // Changement d'état graphique de confirmation
                     form.style.transition = 'opacity 0.3s, transform 0.3s';
                     form.style.opacity = '0';
                     form.style.transform = 'scale(0.95)';
@@ -725,13 +698,13 @@
                         }
                     }, 300);
 
-                    showNotification("Confirmation transmise en direct !", "success");
+                    showNotification("Inscription transmise en direct au Cloud !", "success");
 
                 } catch (error) {
-                    console.error("Erreur réseau :", error);
+                    console.error("Erreur Firebase :", error);
                     submitButton.disabled = false;
                     submitButton.innerHTML = originalButtonContent;
-                    showNotification("Impossible de valider. Réessayez !", "error");
+                    showNotification("Erreur de connexion. Vérifiez vos clés config.", "error");
                 }
             });
 
@@ -782,24 +755,6 @@
                 adminDashboardModal.classList.add('hidden');
             });
 
-            // Action manuelle : Forcer la mise à jour réseau
-            refreshAdminBtn.addEventListener('click', async () => {
-                refreshAdminBtn.disabled = true;
-                refreshAdminBtn.textContent = "🔄 Synchronisation...";
-                
-                await loadCloudDatabase();
-                renderAdminList();
-                
-                setTimeout(() => {
-                    refreshAdminBtn.disabled = false;
-                    refreshAdminBtn.innerHTML = `
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"></path></svg>
-                        🔄 Synchroniser / Rafraîchir
-                    `;
-                    showNotification("Données cloud synchronisées avec succès !", "success");
-                }, 400);
-            });
-
             // Admin dashboard rendering logic
             function renderAdminList() {
                 const searchFilter = adminSearchInput.value.toLowerCase().trim();
@@ -830,7 +785,7 @@
                     tbodyHtml = `
                         <tr>
                             <td colspan="4" class="p-8 text-center text-slate-400 italic bg-white">
-                                Aucun participant trouvé... 🔍
+                                Aucun inscrit trouvé... 🔍
                             </td>
                         </tr>
                     `;
@@ -875,26 +830,19 @@
 
             // Modification dynamique en direct des inscrits (+ / -)
             window.updateGuests = async (id, change) => {
-                const targetIndex = activeRSVPs.findIndex(item => item.id === id);
-                if (targetIndex === -1) return;
+                const target = activeRSVPs.find(item => item.id === id);
+                if (!target) return;
 
-                let newCount = activeRSVPs[targetIndex].guests + change;
+                let newCount = target.guests + change;
                 if (newCount < 0) newCount = 0;
                 if (newCount > 25) newCount = 25;
 
-                if (newCount === activeRSVPs[targetIndex].guests) return;
-
                 try {
-                    await loadCloudDatabase();
-                    const item = activeRSVPs.find(i => i.id === id);
-                    if (item) {
-                        item.guests = newCount;
-                        await saveCloudDatabase();
-                        renderAdminList();
-                        showNotification("Nombre de participants mis à jour !", "info");
-                    }
+                    const docRef = doc(db, "rsvps_louise_therese_2026", id);
+                    await updateDoc(docRef, { guests: newCount });
+                    showNotification("Nombre de participants mis à jour !", "info");
                 } catch (err) {
-                    showNotification("Erreur lors de la modification réseau.", "error");
+                    showNotification("Erreur lors de la modification cloud.", "error");
                 }
             };
 
@@ -907,10 +855,8 @@
                 if (!confirmed) return;
 
                 try {
-                    await loadCloudDatabase();
-                    activeRSVPs = activeRSVPs.filter(i => i.id !== id);
-                    await saveCloudDatabase();
-                    renderAdminList();
+                    const docRef = doc(db, "rsvps_louise_therese_2026", id);
+                    await deleteDoc(docRef);
                     showNotification("Famille supprimée avec succès !", "success");
                 } catch (err) {
                     showNotification("Erreur lors de la suppression.", "error");
@@ -929,7 +875,7 @@
 
                 activeRSVPs.forEach(item => {
                     const cleanName = item.name.replace(/;/g, ',');
-                    const cleanDate = item.timestamp ? new Date(item.timestamp).toLocaleString('fr-FR') : 'N/C';
+                    const cleanDate = item.timestamp ? new Date(item.timestamp).toLocaleString('fr-FR') : 'Non renseignée';
                     csvContent += `Famille ${cleanName};${item.guests};${cleanDate}\n`;
                 });
 
@@ -999,4 +945,3 @@
     </script>
 </body>
 </html>
-```eof
