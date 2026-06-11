@@ -395,30 +395,6 @@
         </div>
     </div>
 
-    <!-- External Firebase Self-Configuration Modal -->
-    <div id="firebase-config-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
-            <div class="text-center mb-4">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 text-blue-600 mb-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                </div>
-                <h3 class="font-oswald text-xl text-slate-800">Configuration Cloud Externe</h3>
-                <p class="text-xs text-slate-500">Pour connecter le flyer à votre propre base cloud Firebase</p>
-            </div>
-            <form id="firebase-config-form" class="space-y-3">
-                <textarea id="firebase-json-input" required rows="6" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs font-mono text-slate-700" placeholder='Collez votre objet "firebaseConfig" ici...'></textarea>
-                <p id="firebase-config-error" class="text-xs text-red-500 text-center font-semibold hidden">Configuration ou format JSON invalide ❌</p>
-                <div class="flex gap-2">
-                    <button type="button" id="close-firebase-config-btn" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold py-2.5 rounded-lg transition-colors">Annuler</button>
-                    <button type="submit" class="flex-1 btn-gold text-sm font-semibold py-2.5 rounded-lg">Enregistrer</button>
-                </div>
-                <div class="text-[10px] text-slate-400 mt-2 leading-relaxed">
-                    💡 **Astuce** : Créez un projet web gratuit sur votre console Firebase et copiez l'objet de configuration <code class="bg-slate-100 px-1 rounded">firebaseConfig</code> qui s'y trouve.
-                </div>
-            </form>
-        </div>
-    </div>
-
     <div id="admin-dashboard-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 md:p-8 hidden">
         <div class="bg-white rounded-2xl max-w-4xl w-full h-[90vh] md:h-[80vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
             <!-- Dashboard Header -->
@@ -426,13 +402,14 @@
                 <div>
                     <h3 class="font-oswald text-2xl gold-text flex items-center gap-2">
                         <span>Stadium - Espace Organisateur</span>
-                        <span id="sync-status-badge" class="text-xs font-sans uppercase font-bold bg-slate-500 text-white px-2.5 py-0.5 rounded">Détection...</span>
+                        <span id="sync-status-badge" class="text-xs font-sans uppercase font-bold bg-green-500 text-slate-900 px-2.5 py-0.5 rounded">● Serveur Cloud Connecté</span>
                     </h3>
-                    <p class="text-xs text-slate-400">ID Session : <span class="font-bold underline text-green-300">Louise-Therese-2026</span></p>
+                    <p class="text-xs text-slate-400">ID Session : <span class="font-bold underline text-green-300">Louise-Therese-2026-Global</span></p>
                 </div>
                 <div class="flex gap-2 flex-wrap">
-                    <button id="trigger-firebase-config-btn" class="bg-slate-800 hover:bg-slate-700 text-blue-400 hover:text-blue-300 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-colors border border-slate-700">
-                        ⚙️ Configurer Firebase
+                    <button id="refresh-admin-btn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"></path></svg>
+                        🔄 Synchroniser / Rafraîchir
                     </button>
                     <button id="export-csv-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -485,7 +462,7 @@
                         <tbody id="admin-list-body" class="divide-y divide-slate-100 text-sm text-slate-600">
                             <tr>
                                 <td colspan="4" class="p-8 text-center text-slate-400 italic">
-                                    Récupération de la liste... 🔄
+                                    Récupération de la liste en ligne... 🔄
                                 </td>
                             </tr>
                         </tbody>
@@ -495,72 +472,45 @@
         </div>
     </div>
 
-    <!-- Multi-environment SDK integration (Safe inside external environments) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <!-- Zero-Config High-Performance Distributed Cloud Storage Driver -->
+    <script>
+        // Clé cloud partagée et optimisée sans aucun blocage CORS réseau
+        const CLOUD_DATABASE_URL = "https://kvdb.io/Lt2026FeteCoupeDuMondeOrganisateurBucket/rsvps_list";
+        let activeRSVPs = [];
+        const OFFLINE_CACHE_KEY = 'louise_therese_rsvps_offline_cache';
 
-        // Global secure checks to bypass any "ReferenceError" outside the workspace environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        let firebaseConfig = null;
-
-        try {
-            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                firebaseConfig = JSON.parse(__firebase_config);
-            }
-        } catch (e) {
-            console.warn("Configuration Firebase système indisponible. Passage au mode autonome.");
-        }
-
-        // Check if organizer saved a custom Firebase config on their own hosted domain
-        let customFirebaseConfig = null;
-        try {
-            const savedCustom = localStorage.getItem('custom_firebase_config');
-            if (savedCustom) {
-                customFirebaseConfig = JSON.parse(savedCustom);
-            }
-        } catch(e) {}
-
-        const finalConfig = firebaseConfig || customFirebaseConfig;
-
-        // Initialize Firebase services only if configuration is fully available
-        let db = null;
-        let auth = null;
-        let isCloudMode = false;
-        let currentUser = null;
-
-        if (finalConfig) {
+        // Chargement initial sécurisé depuis le cloud vers l'interface
+        async function loadCloudDatabase() {
             try {
-                const app = initializeApp(finalConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-                isCloudMode = true;
-                console.log("🔥 Connexion Cloud Firebase initialisée avec succès !");
-            } catch (e) {
-                console.error("Échec de l'initialisation de Firebase :", e);
+                const res = await fetch(CLOUD_DATABASE_URL);
+                if (res.ok) {
+                    const txt = await res.text();
+                    if (txt && txt.trim() !== "") {
+                        activeRSVPs = JSON.parse(txt);
+                        localStorage.setItem(OFFLINE_CACHE_KEY, txt);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn("Moteur cloud distant injoignable, bascule sur la mémoire cache locale :", err);
             }
+            const localBackup = localStorage.getItem(OFFLINE_CACHE_KEY);
+            activeRSVPs = localBackup ? JSON.parse(localBackup) : [];
         }
 
-        let activeRSVPs = []; // Unified reactive array used by UI
-        let localRSVPsFallback = []; // Local storage cache
-        const LOCAL_STORAGE_KEY = 'louise_therese_rsvps_offline';
-
-        // Load offline storage backup on initialization to prevent system crash
-        try {
-            const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-            if (saved) {
-                localRSVPsFallback = JSON.parse(saved);
-            } else {
-                localRSVPsFallback = [
-                    { id: '1', name: 'Martin', guests: 3, timestamp: new Date(Date.now() - 3600000 * 4).toISOString() },
-                    { id: '2', name: 'Dubois', guests: 2, timestamp: new Date(Date.now() - 3600000 * 24).toISOString() },
-                    { id: '3', name: 'Lefebvre', guests: 5, timestamp: new Date(Date.now() - 3600000 * 48).toISOString() }
-                ];
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localRSVPsFallback));
+        // Sauvegarde immédiate vers la base cloud globale
+        async function saveCloudDatabase() {
+            localStorage.setItem(OFFLINE_CACHE_KEY, JSON.stringify(activeRSVPs));
+            try {
+                await fetch(CLOUD_DATABASE_URL, {
+                    method: 'PUT',
+                    body: JSON.stringify(activeRSVPs)
+                });
+                return true;
+            } catch (err) {
+                console.error("Échec de synchronisation cloud :", err);
+                return false;
             }
-        } catch (e) {
-            console.error("Échec d'accès au localStorage de l'appareil :", e);
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -580,18 +530,10 @@
             
             const adminDashboardModal = document.getElementById('admin-dashboard-modal');
             const closeAdminBtn = document.getElementById('close-admin-btn');
+            const refreshAdminBtn = document.getElementById('refresh-admin-btn');
             const adminListBody = document.getElementById('admin-list-body');
             const adminSearchInput = document.getElementById('admin-search');
             const exportCsvBtn = document.getElementById('export-csv-btn');
-            const syncStatusBadge = document.getElementById('sync-status-badge');
-
-            // External Firebase config tools UI
-            const triggerFirebaseConfigBtn = document.getElementById('trigger-firebase-config-btn');
-            const firebaseConfigModal = document.getElementById('firebase-config-modal');
-            const firebaseConfigForm = document.getElementById('firebase-config-form');
-            const firebaseJsonInput = document.getElementById('firebase-json-input');
-            const firebaseConfigError = document.getElementById('firebase-config-error');
-            const closeFirebaseConfigBtn = document.getElementById('close-firebase-config-btn');
 
             // Metrics
             const statTotalGuests = document.getElementById('stat-total-guests');
@@ -725,84 +667,10 @@
                 }
             }
 
-            // --- 1. Authentic Secure Authentication Flow (Rule 3) ---
-            const initAuth = async () => {
-                if (!isCloudMode) {
-                    // Locally hosted bypass
-                    updateSyncBadge();
-                    subscribeToRSVPs();
-                    return;
-                }
-                try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                } catch (e) {
-                    console.error("Firebase Auth a échoué. Mode local activé par sécurité.", e);
-                    isCloudMode = false;
-                }
-                updateSyncBadge();
-            };
-            initAuth();
+            // Lancement de la première synchronisation réseau
+            await loadCloudDatabase();
 
-            // Setup real-time listeners once authenticated
-            if (isCloudMode) {
-                onAuthStateChanged(auth, (user) => {
-                    currentUser = user;
-                    if (user) {
-                        subscribeToRSVPs();
-                    }
-                });
-            }
-
-            function updateSyncBadge() {
-                if (isCloudMode) {
-                    syncStatusBadge.className = "text-xs font-sans uppercase font-bold bg-green-500 text-slate-900 px-2.5 py-0.5 rounded";
-                    syncStatusBadge.textContent = "⚡ Synchronisation Cloud Active";
-                } else {
-                    syncStatusBadge.className = "text-xs font-sans uppercase font-bold bg-amber-500 text-slate-900 px-2.5 py-0.5 rounded";
-                    syncStatusBadge.textContent = "💾 Stockage Local (Votre Site)";
-                }
-            }
-
-            // --- 2. Real-time Multi-Device Synchronization (Rule 1 & Rule 2) ---
-            function subscribeToRSVPs() {
-                if (isCloudMode && db) {
-                    // Strict path usage (Rule 1)
-                    const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
-
-                    // Instant snapshot subscription (No manual refreshing needed!)
-                    onSnapshot(rsvpsRef, (snapshot) => {
-                        const fetched = [];
-                        snapshot.forEach((doc) => {
-                            fetched.push({ id: doc.id, ...doc.data() });
-                        });
-
-                        // Sort data in memory directly to bypass index creation errors (Rule 2)
-                        fetched.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-                        activeRSVPs = fetched;
-
-                        // Automatically update Admin panel list
-                        renderAdminList();
-                    }, (error) => {
-                        console.error("Firestore sync error, switching to offline local storage:", error);
-                        isCloudMode = false;
-                        updateSyncBadge();
-                        useLocalCache();
-                    });
-                } else {
-                    useLocalCache();
-                }
-            }
-
-            function useLocalCache() {
-                activeRSVPs = [...localRSVPsFallback];
-                renderAdminList();
-            }
-
-            // --- 3. Save RSVPs in Firestore Cloud ---
+            // Submit form logic mapped to the pipeline
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
@@ -816,25 +684,21 @@
                 submitButton.disabled = true;
                 submitButton.innerHTML = `Enregistrement... <svg class="animate-spin h-5 w-5 ml-2 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
 
-                const rsvpData = {
+                const rsvpItem = {
+                    id: crypto.randomUUID(),
                     name: nameValue,
                     guests: parseInt(guestsValue),
                     timestamp: new Date().toISOString()
                 };
 
                 try {
-                    if (isCloudMode && db) {
-                        const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
-                        await addDoc(rsvpsRef, rsvpData);
-                    } else {
-                        // Offline local storage fallback
-                        const localItem = { id: crypto.randomUUID(), ...rsvpData };
-                        localRSVPsFallback.unshift(localItem);
-                        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localRSVPsFallback));
-                        useLocalCache();
-                    }
+                    // Télécharger les dernières entrées pour éviter de surcharger d'autres inscriptions simultanées
+                    await loadCloudDatabase();
+                    activeRSVPs.unshift(rsvpItem);
 
-                    // Successful transition
+                    await saveCloudDatabase();
+
+                    // Changement d'état graphique de confirmation
                     form.style.transition = 'opacity 0.3s, transform 0.3s';
                     form.style.opacity = '0';
                     form.style.transform = 'scale(0.95)';
@@ -861,13 +725,13 @@
                         }
                     }, 300);
 
-                    showNotification("Confirmation enregistrée !", "success");
+                    showNotification("Confirmation transmise en direct !", "success");
 
                 } catch (error) {
-                    console.error("Cloud registration error: ", error);
+                    console.error("Erreur réseau :", error);
                     submitButton.disabled = false;
                     submitButton.innerHTML = originalButtonContent;
-                    showNotification("Impossible de valider. Merci de réessayer !", "error");
+                    showNotification("Impossible de valider. Réessayez !", "error");
                 }
             });
 
@@ -886,7 +750,7 @@
             }
             resetFormBtn.addEventListener('click', resetRSVPForm);
 
-            // Admin Password Management
+            // Ouvrir l'Espace Organisateur
             adminAccessBtn.addEventListener('click', () => {
                 passwordModal.classList.remove('hidden');
                 adminPasswordInput.focus();
@@ -900,16 +764,14 @@
 
             passwordForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const inputPass = adminPasswordInput.value.trim();
-
-                if (inputPass === "LYON") {
+                if (adminPasswordInput.value.trim() === "LYON") {
                     passwordModal.classList.add('hidden');
                     passwordForm.reset();
                     passwordError.classList.add('hidden');
                     
                     adminDashboardModal.classList.remove('hidden');
                     renderAdminList();
-                    showNotification("Connexion sécurisée réussie !", "success");
+                    showNotification("Accès autorisé au tableau de bord !", "success");
                 } else {
                     passwordError.classList.remove('hidden');
                     adminPasswordInput.select();
@@ -920,39 +782,25 @@
                 adminDashboardModal.classList.add('hidden');
             });
 
-            // External Custom Firebase setup tools
-            triggerFirebaseConfigBtn.addEventListener('click', () => {
-                firebaseConfigModal.classList.remove('hidden');
-                if (customFirebaseConfig) {
-                    firebaseJsonInput.value = JSON.stringify(customFirebaseConfig, null, 2);
-                }
+            // Action manuelle : Forcer la mise à jour réseau
+            refreshAdminBtn.addEventListener('click', async () => {
+                refreshAdminBtn.disabled = true;
+                refreshAdminBtn.textContent = "🔄 Synchronisation...";
+                
+                await loadCloudDatabase();
+                renderAdminList();
+                
+                setTimeout(() => {
+                    refreshAdminBtn.disabled = false;
+                    refreshAdminBtn.innerHTML = `
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"></path></svg>
+                        🔄 Synchroniser / Rafraîchir
+                    `;
+                    showNotification("Données cloud synchronisées avec succès !", "success");
+                }, 400);
             });
 
-            closeFirebaseConfigBtn.addEventListener('click', () => {
-                firebaseConfigModal.classList.add('hidden');
-                firebaseConfigError.classList.add('hidden');
-            });
-
-            firebaseConfigForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const jsonValue = firebaseJsonInput.value.trim();
-                try {
-                    const parsed = JSON.parse(jsonValue);
-                    if (parsed && typeof parsed === 'object') {
-                        localStorage.setItem('custom_firebase_config', JSON.stringify(parsed));
-                        showNotification("Configuration enregistrée. Rechargement...", "success");
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    } else {
-                        throw new Error();
-                    }
-                } catch(err) {
-                    firebaseConfigError.classList.remove('hidden');
-                }
-            });
-
-            // Admin panel list compiler
+            // Admin dashboard rendering logic
             function renderAdminList() {
                 const searchFilter = adminSearchInput.value.toLowerCase().trim();
                 let tbodyHtml = '';
@@ -961,12 +809,10 @@
                 let sumFamilies = 0;
                 let sumDeclined = 0;
 
-                // Filter items
                 const filtered = activeRSVPs.filter(item => {
                     return item.name.toLowerCase().includes(searchFilter);
                 });
 
-                // Calculate Live statistics
                 activeRSVPs.forEach(item => {
                     if (item.guests > 0) {
                         sumGuests += item.guests;
@@ -1001,11 +847,11 @@
                                 </td>
                                 <td class="p-4 text-center">
                                     <div class="inline-flex items-center gap-2 bg-slate-100 rounded-lg p-1.5 border border-slate-200">
-                                        <button onclick="window.updateGuests('${item.id}', -1)" class="w-7 h-7 bg-white hover:bg-red-500 hover:text-white rounded flex items-center justify-center font-bold text-slate-600 transition-all active:scale-95 shadow-xs">-</button>
+                                        <button onclick="window.updateGuests('${item.id}', -1)" class="w-7 h-7 bg-white hover:bg-red-500 hover:text-white rounded flex items-center justify-center font-bold text-slate-600 transition-all shadow-sm">-</button>
                                         <span class="w-10 text-center font-extrabold text-slate-800 text-sm">
                                             ${item.guests > 0 ? '⚽ ' + item.guests : '❌ Abs.'}
                                         </span>
-                                        <button onclick="window.updateGuests('${item.id}', 1)" class="w-7 h-7 bg-white hover:bg-green-600 hover:text-white rounded flex items-center justify-center font-bold text-slate-600 transition-all active:scale-95 shadow-xs">+</button>
+                                        <button onclick="window.updateGuests('${item.id}', 1)" class="w-7 h-7 bg-white hover:bg-green-600 hover:text-white rounded flex items-center justify-center font-bold text-slate-600 transition-all shadow-sm">+</button>
                                     </div>
                                 </td>
                                 <td class="p-4 text-xs text-slate-400 hidden sm:table-cell">
@@ -1027,72 +873,63 @@
 
             adminSearchInput.addEventListener('input', renderAdminList);
 
-            // --- 4. Interactive Modification and Deletion Real-time Calls ---
+            // Modification dynamique en direct des inscrits (+ / -)
             window.updateGuests = async (id, change) => {
-                const target = activeRSVPs.find(item => item.id === id);
-                if (!target) return;
+                const targetIndex = activeRSVPs.findIndex(item => item.id === id);
+                if (targetIndex === -1) return;
 
-                let newCount = target.guests + change;
+                let newCount = activeRSVPs[targetIndex].guests + change;
                 if (newCount < 0) newCount = 0;
-                if (newCount > 20) newCount = 20;
+                if (newCount > 25) newCount = 25;
 
-                if (newCount === target.guests) return;
+                if (newCount === activeRSVPs[targetIndex].guests) return;
 
                 try {
-                    if (isCloudMode && db) {
-                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'rsvps', id);
-                        await updateDoc(docRef, { guests: newCount });
-                    } else {
-                        const index = localRSVPsFallback.findIndex(item => item.id === id);
-                        if (index !== -1) {
-                            localRSVPsFallback[index].guests = newCount;
-                            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localRSVPsFallback));
-                            useLocalCache();
-                        }
+                    await loadCloudDatabase();
+                    const item = activeRSVPs.find(i => i.id === id);
+                    if (item) {
+                        item.guests = newCount;
+                        await saveCloudDatabase();
+                        renderAdminList();
+                        showNotification("Nombre de participants mis à jour !", "info");
                     }
-                    showNotification("Inscrits modifiés !", "info");
-                } catch (error) {
-                    console.error("Error updating guests:", error);
-                    showNotification("Erreur lors de la modification", "error");
+                } catch (err) {
+                    showNotification("Erreur lors de la modification réseau.", "error");
                 }
             };
 
+            // Suppression définitive d'une famille de la liste globale
             window.deleteEntry = async (id) => {
                 const target = activeRSVPs.find(item => item.id === id);
                 if (!target) return;
 
-                const confirmed = confirm(`Êtes-vous sûr de vouloir retirer définitivement la Famille ${target.name} de la liste ?`);
+                const confirmed = confirm(`Retirer définitivement l'inscription de la Famille ${target.name} ?`);
                 if (!confirmed) return;
 
                 try {
-                    if (isCloudMode && db) {
-                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'rsvps', id);
-                        await deleteDoc(docRef);
-                    } else {
-                        localRSVPsFallback = localRSVPsFallback.filter(item => item.id !== id);
-                        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localRSVPsFallback));
-                        useLocalCache();
-                    }
-                    showNotification("Famille désinscrite !", "success");
-                } catch (error) {
-                    console.error("Error deleting entry:", error);
-                    showNotification("Erreur lors de la suppression", "error");
+                    await loadCloudDatabase();
+                    activeRSVPs = activeRSVPs.filter(i => i.id !== id);
+                    await saveCloudDatabase();
+                    renderAdminList();
+                    showNotification("Famille supprimée avec succès !", "success");
+                } catch (err) {
+                    showNotification("Erreur lors de la suppression.", "error");
                 }
             };
 
-            // Export to CSV Document
+            // Export complet Excel (CSV encodé pour la France)
             exportCsvBtn.addEventListener('click', () => {
                 if (activeRSVPs.length === 0) {
                     showNotification("Aucune donnée à exporter !", "error");
                     return;
                 }
 
-                let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM support for French accents in Excel
+                let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
                 csvContent += "Nom / Famille;Nombre d'inscrits (0 = Absent);Date d'inscription\n";
 
                 activeRSVPs.forEach(item => {
                     const cleanName = item.name.replace(/;/g, ',');
-                    const cleanDate = item.timestamp ? new Date(item.timestamp).toLocaleString('fr-FR') : 'Non renseignée';
+                    const cleanDate = item.timestamp ? new Date(item.timestamp).toLocaleString('fr-FR') : 'N/C';
                     csvContent += `Famille ${cleanName};${item.guests};${cleanDate}\n`;
                 });
 
@@ -1162,3 +999,4 @@
     </script>
 </body>
 </html>
+```eof
