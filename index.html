@@ -395,6 +395,30 @@
         </div>
     </div>
 
+    <!-- External Firebase Self-Configuration Modal -->
+    <div id="firebase-config-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
+            <div class="text-center mb-4">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 text-blue-600 mb-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </div>
+                <h3 class="font-oswald text-xl text-slate-800">Configuration Cloud Externe</h3>
+                <p class="text-xs text-slate-500">Pour connecter le flyer à votre propre base cloud Firebase</p>
+            </div>
+            <form id="firebase-config-form" class="space-y-3">
+                <textarea id="firebase-json-input" required rows="6" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs font-mono text-slate-700" placeholder='Collez votre objet "firebaseConfig" ici...'></textarea>
+                <p id="firebase-config-error" class="text-xs text-red-500 text-center font-semibold hidden">Configuration ou format JSON invalide ❌</p>
+                <div class="flex gap-2">
+                    <button type="button" id="close-firebase-config-btn" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold py-2.5 rounded-lg transition-colors">Annuler</button>
+                    <button type="submit" class="flex-1 btn-gold text-sm font-semibold py-2.5 rounded-lg">Enregistrer</button>
+                </div>
+                <div class="text-[10px] text-slate-400 mt-2 leading-relaxed">
+                    💡 **Astuce** : Créez un projet web gratuit sur votre console Firebase et copiez l'objet de configuration <code class="bg-slate-100 px-1 rounded">firebaseConfig</code> qui s'y trouve.
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="admin-dashboard-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 md:p-8 hidden">
         <div class="bg-white rounded-2xl max-w-4xl w-full h-[90vh] md:h-[80vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
             <!-- Dashboard Header -->
@@ -402,11 +426,14 @@
                 <div>
                     <h3 class="font-oswald text-2xl gold-text flex items-center gap-2">
                         <span>Stadium - Espace Organisateur</span>
-                        <span class="text-xs font-sans uppercase font-bold bg-green-500 text-slate-900 px-2.5 py-0.5 rounded">Session Live Cloud</span>
+                        <span id="sync-status-badge" class="text-xs font-sans uppercase font-bold bg-slate-500 text-white px-2.5 py-0.5 rounded">Détection...</span>
                     </h3>
                     <p class="text-xs text-slate-400">ID Session : <span class="font-bold underline text-green-300">Louise-Therese-2026</span></p>
                 </div>
                 <div class="flex gap-2 flex-wrap">
+                    <button id="trigger-firebase-config-btn" class="bg-slate-800 hover:bg-slate-700 text-blue-400 hover:text-blue-300 text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-colors border border-slate-700">
+                        ⚙️ Configurer Firebase
+                    </button>
                     <button id="export-csv-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                         Exporter Excel
@@ -458,7 +485,7 @@
                         <tbody id="admin-list-body" class="divide-y divide-slate-100 text-sm text-slate-600">
                             <tr>
                                 <td colspan="4" class="p-8 text-center text-slate-400 italic">
-                                    Récupération de la liste en ligne... 🔄
+                                    Récupération de la liste... 🔄
                                 </td>
                             </tr>
                         </tbody>
@@ -468,21 +495,73 @@
         </div>
     </div>
 
-    <!-- Real-time Firestore SDK Modules (Rule 1, Rule 2 & Rule 3 compliant) -->
+    <!-- Multi-environment SDK integration (Safe inside external environments) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global Firestore context provided securely by the platform
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        // Global secure checks to bypass any "ReferenceError" outside the workspace environment
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        let firebaseConfig = null;
 
+        try {
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                firebaseConfig = JSON.parse(__firebase_config);
+            }
+        } catch (e) {
+            console.warn("Configuration Firebase système indisponible. Passage au mode autonome.");
+        }
+
+        // Check if organizer saved a custom Firebase config on their own hosted domain
+        let customFirebaseConfig = null;
+        try {
+            const savedCustom = localStorage.getItem('custom_firebase_config');
+            if (savedCustom) {
+                customFirebaseConfig = JSON.parse(savedCustom);
+            }
+        } catch(e) {}
+
+        const finalConfig = firebaseConfig || customFirebaseConfig;
+
+        // Initialize Firebase services only if configuration is fully available
+        let db = null;
+        let auth = null;
+        let isCloudMode = false;
         let currentUser = null;
-        let activeRSVPs = []; // Reactive dataset synced with multiple devices instantly
+
+        if (finalConfig) {
+            try {
+                const app = initializeApp(finalConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                isCloudMode = true;
+                console.log("🔥 Connexion Cloud Firebase initialisée avec succès !");
+            } catch (e) {
+                console.error("Échec de l'initialisation de Firebase :", e);
+            }
+        }
+
+        let activeRSVPs = []; // Unified reactive array used by UI
+        let localRSVPsFallback = []; // Local storage cache
+        const LOCAL_STORAGE_KEY = 'louise_therese_rsvps_offline';
+
+        // Load offline storage backup on initialization to prevent system crash
+        try {
+            const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (saved) {
+                localRSVPsFallback = JSON.parse(saved);
+            } else {
+                localRSVPsFallback = [
+                    { id: '1', name: 'Martin', guests: 3, timestamp: new Date(Date.now() - 3600000 * 4).toISOString() },
+                    { id: '2', name: 'Dubois', guests: 2, timestamp: new Date(Date.now() - 3600000 * 24).toISOString() },
+                    { id: '3', name: 'Lefebvre', guests: 5, timestamp: new Date(Date.now() - 3600000 * 48).toISOString() }
+                ];
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localRSVPsFallback));
+            }
+        } catch (e) {
+            console.error("Échec d'accès au localStorage de l'appareil :", e);
+        }
 
         document.addEventListener('DOMContentLoaded', async () => {
             const form = document.getElementById('rsvp-form');
@@ -504,6 +583,15 @@
             const adminListBody = document.getElementById('admin-list-body');
             const adminSearchInput = document.getElementById('admin-search');
             const exportCsvBtn = document.getElementById('export-csv-btn');
+            const syncStatusBadge = document.getElementById('sync-status-badge');
+
+            // External Firebase config tools UI
+            const triggerFirebaseConfigBtn = document.getElementById('trigger-firebase-config-btn');
+            const firebaseConfigModal = document.getElementById('firebase-config-modal');
+            const firebaseConfigForm = document.getElementById('firebase-config-form');
+            const firebaseJsonInput = document.getElementById('firebase-json-input');
+            const firebaseConfigError = document.getElementById('firebase-config-error');
+            const closeFirebaseConfigBtn = document.getElementById('close-firebase-config-btn');
 
             // Metrics
             const statTotalGuests = document.getElementById('stat-total-guests');
@@ -639,6 +727,12 @@
 
             // --- 1. Authentic Secure Authentication Flow (Rule 3) ---
             const initAuth = async () => {
+                if (!isCloudMode) {
+                    // Locally hosted bypass
+                    updateSyncBadge();
+                    subscribeToRSVPs();
+                    return;
+                }
                 try {
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         await signInWithCustomToken(auth, __initial_auth_token);
@@ -646,43 +740,66 @@
                         await signInAnonymously(auth);
                     }
                 } catch (e) {
-                    console.error("Firebase auth initialization failed:", e);
+                    console.error("Firebase Auth a échoué. Mode local activé par sécurité.", e);
+                    isCloudMode = false;
                 }
+                updateSyncBadge();
             };
             initAuth();
 
             // Setup real-time listeners once authenticated
-            onAuthStateChanged(auth, (user) => {
-                currentUser = user;
-                if (user) {
-                    subscribeToRSVPs();
+            if (isCloudMode) {
+                onAuthStateChanged(auth, (user) => {
+                    currentUser = user;
+                    if (user) {
+                        subscribeToRSVPs();
+                    }
+                });
+            }
+
+            function updateSyncBadge() {
+                if (isCloudMode) {
+                    syncStatusBadge.className = "text-xs font-sans uppercase font-bold bg-green-500 text-slate-900 px-2.5 py-0.5 rounded";
+                    syncStatusBadge.textContent = "⚡ Synchronisation Cloud Active";
+                } else {
+                    syncStatusBadge.className = "text-xs font-sans uppercase font-bold bg-amber-500 text-slate-900 px-2.5 py-0.5 rounded";
+                    syncStatusBadge.textContent = "💾 Stockage Local (Votre Site)";
                 }
-            });
+            }
 
             // --- 2. Real-time Multi-Device Synchronization (Rule 1 & Rule 2) ---
             function subscribeToRSVPs() {
-                if (!currentUser) return;
+                if (isCloudMode && db) {
+                    // Strict path usage (Rule 1)
+                    const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
 
-                // Strict path usage (Rule 1)
-                const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
+                    // Instant snapshot subscription (No manual refreshing needed!)
+                    onSnapshot(rsvpsRef, (snapshot) => {
+                        const fetched = [];
+                        snapshot.forEach((doc) => {
+                            fetched.push({ id: doc.id, ...doc.data() });
+                        });
 
-                // Instant snapshot subscription (No manual refreshing needed!)
-                onSnapshot(rsvpsRef, (snapshot) => {
-                    const fetched = [];
-                    snapshot.forEach((doc) => {
-                        fetched.push({ id: doc.id, ...doc.data() });
+                        // Sort data in memory directly to bypass index creation errors (Rule 2)
+                        fetched.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+                        activeRSVPs = fetched;
+
+                        // Automatically update Admin panel list
+                        renderAdminList();
+                    }, (error) => {
+                        console.error("Firestore sync error, switching to offline local storage:", error);
+                        isCloudMode = false;
+                        updateSyncBadge();
+                        useLocalCache();
                     });
+                } else {
+                    useLocalCache();
+                }
+            }
 
-                    // Sort data in memory directly to bypass index creation errors (Rule 2)
-                    fetched.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-                    activeRSVPs = fetched;
-
-                    // Automatically update Admin panel lists if currently open
-                    renderAdminList();
-                }, (error) => {
-                    console.error("Firestore synchronisation error:", error);
-                    showNotification("Erreur de connexion cloud live.", "error");
-                });
+            function useLocalCache() {
+                activeRSVPs = [...localRSVPsFallback];
+                renderAdminList();
             }
 
             // --- 3. Save RSVPs in Firestore Cloud ---
@@ -692,11 +809,6 @@
                 const nameValue = document.getElementById('name').value.trim();
                 const guestsValue = document.getElementById('guests').value;
                 const isAttending = guestsValue !== "0";
-
-                if (!currentUser) {
-                    showNotification("Connexion sécurisée en cours, patientez...", "error");
-                    return;
-                }
 
                 const submitButton = form.querySelector('button[type="submit"]');
                 const originalButtonContent = submitButton.innerHTML;
@@ -711,8 +823,16 @@
                 };
 
                 try {
-                    const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
-                    await addDoc(rsvpsRef, rsvpData);
+                    if (isCloudMode && db) {
+                        const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
+                        await addDoc(rsvpsRef, rsvpData);
+                    } else {
+                        // Offline local storage fallback
+                        const localItem = { id: crypto.randomUUID(), ...rsvpData };
+                        localRSVPsFallback.unshift(localItem);
+                        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localRSVPsFallback));
+                        useLocalCache();
+                    }
 
                     // Successful transition
                     form.style.transition = 'opacity 0.3s, transform 0.3s';
@@ -741,7 +861,7 @@
                         }
                     }, 300);
 
-                    showNotification("Confirmation enregistrée en ligne !", "success");
+                    showNotification("Confirmation enregistrée !", "success");
 
                 } catch (error) {
                     console.error("Cloud registration error: ", error);
@@ -798,6 +918,38 @@
 
             closeAdminBtn.addEventListener('click', () => {
                 adminDashboardModal.classList.add('hidden');
+            });
+
+            // External Custom Firebase setup tools
+            triggerFirebaseConfigBtn.addEventListener('click', () => {
+                firebaseConfigModal.classList.remove('hidden');
+                if (customFirebaseConfig) {
+                    firebaseJsonInput.value = JSON.stringify(customFirebaseConfig, null, 2);
+                }
+            });
+
+            closeFirebaseConfigBtn.addEventListener('click', () => {
+                firebaseConfigModal.classList.add('hidden');
+                firebaseConfigError.classList.add('hidden');
+            });
+
+            firebaseConfigForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const jsonValue = firebaseJsonInput.value.trim();
+                try {
+                    const parsed = JSON.parse(jsonValue);
+                    if (parsed && typeof parsed === 'object') {
+                        localStorage.setItem('custom_firebase_config', JSON.stringify(parsed));
+                        showNotification("Configuration enregistrée. Rechargement...", "success");
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        throw new Error();
+                    }
+                } catch(err) {
+                    firebaseConfigError.classList.remove('hidden');
+                }
             });
 
             // Admin panel list compiler
@@ -887,11 +1039,20 @@
                 if (newCount === target.guests) return;
 
                 try {
-                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'rsvps', id);
-                    await updateDoc(docRef, { guests: newCount });
-                    showNotification("Inscrits modifiés en temps réel !", "info");
+                    if (isCloudMode && db) {
+                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'rsvps', id);
+                        await updateDoc(docRef, { guests: newCount });
+                    } else {
+                        const index = localRSVPsFallback.findIndex(item => item.id === id);
+                        if (index !== -1) {
+                            localRSVPsFallback[index].guests = newCount;
+                            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localRSVPsFallback));
+                            useLocalCache();
+                        }
+                    }
+                    showNotification("Inscrits modifiés !", "info");
                 } catch (error) {
-                    console.error("Error updating guests in Firestore:", error);
+                    console.error("Error updating guests:", error);
                     showNotification("Erreur lors de la modification", "error");
                 }
             };
@@ -904,11 +1065,17 @@
                 if (!confirmed) return;
 
                 try {
-                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'rsvps', id);
-                    await deleteDoc(docRef);
+                    if (isCloudMode && db) {
+                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'rsvps', id);
+                        await deleteDoc(docRef);
+                    } else {
+                        localRSVPsFallback = localRSVPsFallback.filter(item => item.id !== id);
+                        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localRSVPsFallback));
+                        useLocalCache();
+                    }
                     showNotification("Famille désinscrite !", "success");
                 } catch (error) {
-                    console.error("Error deleting from Firestore:", error);
+                    console.error("Error deleting entry:", error);
                     showNotification("Erreur lors de la suppression", "error");
                 }
             };
