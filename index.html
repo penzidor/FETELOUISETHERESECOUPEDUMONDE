@@ -198,7 +198,7 @@
 
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- Custom Notification Toast System (No alerts) -->
+    <!-- Custom Notification Toast System -->
     <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
 
     <main class="w-full max-w-5xl z-10 ticket-container relative">
@@ -353,7 +353,7 @@
                             </button>
                         </form>
 
-                        <!-- Success message inside the flyer (Completely Private) -->
+                        <!-- Success message inside the flyer -->
                         <div id="success-message" class="hidden text-center py-6">
                             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 text-green-500 mb-4 animate-bounce">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -401,15 +401,15 @@
             <div class="p-6 bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h3 class="font-oswald text-2xl gold-text flex items-center gap-2">
-                        <span>🏟️ Espace Organisateur</span>
-                        <span class="text-xs font-sans uppercase font-bold bg-green-500 text-slate-900 px-2.5 py-0.5 rounded">Session Live</span>
+                        <span>Stadium - Espace Organisateur</span>
+                        <span class="text-xs font-sans uppercase font-bold bg-green-500 text-slate-900 px-2.5 py-0.5 rounded">Session Live Cloud</span>
                     </h3>
-                    <p class="text-xs text-slate-400">Gérez en direct les participants à la Fête Louise Thérèse 2026</p>
+                    <p class="text-xs text-slate-400">ID Session : <span class="font-bold underline text-green-300">Louise-Therese-2026</span></p>
                 </div>
-                <div class="flex gap-2">
+                <div class="flex gap-2 flex-wrap">
                     <button id="export-csv-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                        Exporter Excel/CSV
+                        Exporter Excel
                     </button>
                     <button id="close-admin-btn" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors">
                         Fermer x
@@ -458,7 +458,7 @@
                         <tbody id="admin-list-body" class="divide-y divide-slate-100 text-sm text-slate-600">
                             <tr>
                                 <td colspan="4" class="p-8 text-center text-slate-400 italic">
-                                    Chargement des données... ⏳
+                                    Récupération de la liste en ligne... 🔄
                                 </td>
                             </tr>
                         </tbody>
@@ -468,44 +468,30 @@
         </div>
     </div>
 
+    <!-- Real-time Firestore SDK Modules (Rule 1, Rule 2 & Rule 3 compliant) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global context variables fallback configuration (Rule 1 & 3)
-        let db = null;
-        let auth = null;
-        let appId = 'default-app-id';
-        let useFirebase = false;
-
-        // In-memory local database backup for offline or test previews
-        let localRSVPs = [];
-
-        try {
-            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                const firebaseConfig = JSON.parse(__firebase_config);
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-                appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                useFirebase = true;
-            }
-        } catch (e) {
-            console.error("Firebase connection blocked or unavailable, using robust Local Engine:", e);
-        }
+        // Global Firestore context provided securely by the platform
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
         let currentUser = null;
-        let activeRSVPs = []; // Local mirror of dynamic RSVP data
+        let activeRSVPs = []; // Reactive dataset synced with multiple devices instantly
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const form = document.getElementById('rsvp-form');
             const successMsg = document.getElementById('success-message');
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
             const resetFormBtn = document.getElementById('reset-form-btn');
             
-            // Administrative & Security hooks
+            // UI Hooks
             const adminAccessBtn = document.getElementById('admin-access-btn');
             const passwordModal = document.getElementById('password-modal');
             const passwordForm = document.getElementById('password-form');
@@ -519,7 +505,7 @@
             const adminSearchInput = document.getElementById('admin-search');
             const exportCsvBtn = document.getElementById('export-csv-btn');
 
-            // Metrics references
+            // Metrics
             const statTotalGuests = document.getElementById('stat-total-guests');
             const statTotalFamilies = document.getElementById('stat-total-families');
             const statTotalDeclined = document.getElementById('stat-total-declined');
@@ -651,13 +637,8 @@
                 }
             }
 
-            // --- STREAMING_CHUNK: Cloud Engine Connection & Authentication ---
+            // --- 1. Authentic Secure Authentication Flow (Rule 3) ---
             const initAuth = async () => {
-                if (!useFirebase) {
-                    // Start in memory simulation
-                    syncLocalDatabase();
-                    return;
-                }
                 try {
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         await signInWithCustomToken(auth, __initial_auth_token);
@@ -665,76 +646,46 @@
                         await signInAnonymously(auth);
                     }
                 } catch (e) {
-                    console.error("Auth initialization failed, using secure fallback local engine", e);
-                    useFirebase = false;
-                    syncLocalDatabase();
+                    console.error("Firebase auth initialization failed:", e);
                 }
             };
             initAuth();
 
-            // Track Auth state changes to download live lists
-            if (useFirebase) {
-                onAuthStateChanged(auth, (user) => {
-                    currentUser = user;
-                    if (user) {
-                        subscribeToRSVPs(user);
-                    }
-                });
-            }
+            // Setup real-time listeners once authenticated
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                if (user) {
+                    subscribeToRSVPs();
+                }
+            });
 
-            // --- STREAMING_CHUNK: Dynamic Data Syncing ---
-            function subscribeToRSVPs(user) {
-                if (!user || !useFirebase) return;
-                
-                // Construct target strict path (Rule 1)
+            // --- 2. Real-time Multi-Device Synchronization (Rule 1 & Rule 2) ---
+            function subscribeToRSVPs() {
+                if (!currentUser) return;
+
+                // Strict path usage (Rule 1)
                 const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
-                
+
+                // Instant snapshot subscription (No manual refreshing needed!)
                 onSnapshot(rsvpsRef, (snapshot) => {
-                    activeRSVPs = [];
+                    const fetched = [];
                     snapshot.forEach((doc) => {
-                        activeRSVPs.push({ id: doc.id, ...doc.data() });
+                        fetched.push({ id: doc.id, ...doc.data() });
                     });
 
-                    // Sort documents in JavaScript memory to avoid complex Index queries (Rule 2)
-                    activeRSVPs.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-                    
-                    // Render current state in admin board if it is open
-                    if (!adminDashboardModal.classList.contains('hidden')) {
-                        renderAdminList();
-                    }
+                    // Sort data in memory directly to bypass index creation errors (Rule 2)
+                    fetched.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+                    activeRSVPs = fetched;
+
+                    // Automatically update Admin panel lists if currently open
+                    renderAdminList();
                 }, (error) => {
-                    console.error("Firestore loading error, running Local Core:", error);
-                    useFirebase = false;
-                    syncLocalDatabase();
+                    console.error("Firestore synchronisation error:", error);
+                    showNotification("Erreur de connexion cloud live.", "error");
                 });
             }
 
-            // Local fallback replication
-            function syncLocalDatabase() {
-                // Read from memory storage or generate mockup for testing environment
-                const saved = localStorage.getItem('local_rsvps_therese');
-                if (saved) {
-                    activeRSVPs = JSON.parse(saved);
-                } else {
-                    // Populate initial elegant dummy data for mockup testing
-                    activeRSVPs = [
-                        { id: '1', name: 'Martin', guests: 3, timestamp: new Date(Date.now() - 3600000 * 4).toISOString() },
-                        { id: '2', name: 'Dubois', guests: 2, timestamp: new Date(Date.now() - 3600000 * 24).toISOString() },
-                        { id: '3', name: 'Lefebvre', guests: 5, timestamp: new Date(Date.now() - 3600000 * 48).toISOString() },
-                        { id: '4', name: 'Moreau', guests: 0, timestamp: new Date(Date.now() - 3600000 * 72).toISOString() }
-                    ];
-                    saveLocalState();
-                }
-                if (!adminDashboardModal.classList.contains('hidden')) {
-                    renderAdminList();
-                }
-            }
-
-            function saveLocalState() {
-                localStorage.setItem('local_rsvps_therese', JSON.stringify(activeRSVPs));
-            }
-
-            // --- STREAMING_CHUNK: Save New Confirmation ---
+            // --- 3. Save RSVPs in Firestore Cloud ---
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
@@ -742,10 +693,14 @@
                 const guestsValue = document.getElementById('guests').value;
                 const isAttending = guestsValue !== "0";
 
+                if (!currentUser) {
+                    showNotification("Connexion sécurisée en cours, patientez...", "error");
+                    return;
+                }
+
                 const submitButton = form.querySelector('button[type="submit"]');
                 const originalButtonContent = submitButton.innerHTML;
                 
-                // Show dynamic loading state
                 submitButton.disabled = true;
                 submitButton.innerHTML = `Enregistrement... <svg class="animate-spin h-5 w-5 ml-2 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
 
@@ -756,17 +711,10 @@
                 };
 
                 try {
-                    if (useFirebase && currentUser) {
-                        const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
-                        await addDoc(rsvpsRef, rsvpData);
-                    } else {
-                        // Secure Local DB save
-                        rsvpData.id = crypto.randomUUID();
-                        activeRSVPs.unshift(rsvpData);
-                        saveLocalState();
-                    }
+                    const rsvpsRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvps');
+                    await addDoc(rsvpsRef, rsvpData);
 
-                    // Successful visual transition
+                    // Successful transition
                     form.style.transition = 'opacity 0.3s, transform 0.3s';
                     form.style.opacity = '0';
                     form.style.transform = 'scale(0.95)';
@@ -789,22 +737,20 @@
                                 <p class="text-slate-600">Votre réponse a bien été prise en compte. À bientôt !</p>
                                 <button id="reset-form-btn-declined" class="mt-4 text-xs font-semibold text-slate-500 hover:text-slate-800 underline">Enregistrer une autre famille</button>
                             `;
-                            // Hook up the reset button for declined cases as well
                             document.getElementById('reset-form-btn-declined').addEventListener('click', resetRSVPForm);
                         }
                     }, 300);
 
-                    showNotification("Confirmation enregistrée avec succès !", "success");
+                    showNotification("Confirmation enregistrée en ligne !", "success");
 
                 } catch (error) {
-                    console.error("Registration error: ", error);
+                    console.error("Cloud registration error: ", error);
                     submitButton.disabled = false;
                     submitButton.innerHTML = originalButtonContent;
                     showNotification("Impossible de valider. Merci de réessayer !", "error");
                 }
             });
 
-            // Resets the flyer form to submit another family name safely
             function resetRSVPForm() {
                 form.reset();
                 form.classList.remove('hidden');
@@ -812,7 +758,6 @@
                 form.style.transform = 'scale(1)';
                 successMsg.classList.add('hidden');
                 
-                // Stop any playing confetti to save processor resources
                 if (confettiAnimationId) {
                     cancelAnimationFrame(confettiAnimationId);
                     confettiAnimationId = null;
@@ -821,7 +766,7 @@
             }
             resetFormBtn.addEventListener('click', resetRSVPForm);
 
-            // --- STREAMING_CHUNK: Admin & Password Management ---
+            // Admin Password Management
             adminAccessBtn.addEventListener('click', () => {
                 passwordModal.classList.remove('hidden');
                 adminPasswordInput.focus();
@@ -842,10 +787,9 @@
                     passwordForm.reset();
                     passwordError.classList.add('hidden');
                     
-                    // Grant access to Admin Dashboard
                     adminDashboardModal.classList.remove('hidden');
                     renderAdminList();
-                    showNotification("Connexion réussie à l'espace organisateur !", "success");
+                    showNotification("Connexion sécurisée réussie !", "success");
                 } else {
                     passwordError.classList.remove('hidden');
                     adminPasswordInput.select();
@@ -856,7 +800,7 @@
                 adminDashboardModal.classList.add('hidden');
             });
 
-            // --- STREAMING_CHUNK: Dynamic Admin Panel Renderer ---
+            // Admin panel list compiler
             function renderAdminList() {
                 const searchFilter = adminSearchInput.value.toLowerCase().trim();
                 let tbodyHtml = '';
@@ -867,11 +811,10 @@
 
                 // Filter items
                 const filtered = activeRSVPs.filter(item => {
-                    const matchName = item.name.toLowerCase().includes(searchFilter);
-                    return matchName;
+                    return item.name.toLowerCase().includes(searchFilter);
                 });
 
-                // Calculate Statistics
+                // Calculate Live statistics
                 activeRSVPs.forEach(item => {
                     if (item.guests > 0) {
                         sumGuests += item.guests;
@@ -881,7 +824,6 @@
                     }
                 });
 
-                // Write Stats inside Organisateur Panels
                 statTotalGuests.textContent = sumGuests;
                 statTotalFamilies.textContent = sumFamilies;
                 statTotalDeclined.textContent = sumDeclined;
@@ -890,12 +832,12 @@
                     tbodyHtml = `
                         <tr>
                             <td colspan="4" class="p-8 text-center text-slate-400 italic bg-white">
-                                Aucun participant ne correspond à votre recherche... 🔍
+                                Aucun participant trouvé... 🔍
                             </td>
                         </tr>
                     `;
                 } else {
-                    filtered.forEach((item, index) => {
+                    filtered.forEach((item) => {
                         const displayDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString('fr-FR', {
                             day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit'
                         }) : 'N/C';
@@ -931,34 +873,26 @@
                 adminListBody.innerHTML = tbodyHtml;
             }
 
-            // Real-time Search input binding
             adminSearchInput.addEventListener('input', renderAdminList);
 
-            // --- STREAMING_CHUNK: Admin Actions (Modify & Delete) ---
+            // --- 4. Interactive Modification and Deletion Real-time Calls ---
             window.updateGuests = async (id, change) => {
                 const target = activeRSVPs.find(item => item.id === id);
                 if (!target) return;
 
                 let newCount = target.guests + change;
-                if (newCount < 0) newCount = 0; // limit floor
-                if (newCount > 20) newCount = 20; // limit ceiling
+                if (newCount < 0) newCount = 0;
+                if (newCount > 20) newCount = 20;
 
                 if (newCount === target.guests) return;
 
                 try {
-                    if (useFirebase && currentUser) {
-                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'rsvps', id);
-                        await updateDoc(docRef, { guests: newCount });
-                    } else {
-                        // Local storage modifications
-                        target.guests = newCount;
-                        saveLocalState();
-                        renderAdminList();
-                    }
-                    showNotification(`Nombre d'inscrits pour la Famille ${target.name} modifié !`, "info");
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'rsvps', id);
+                    await updateDoc(docRef, { guests: newCount });
+                    showNotification("Inscrits modifiés en temps réel !", "info");
                 } catch (error) {
-                    console.error("Update error: ", error);
-                    showNotification("Impossible de mettre à jour.", "error");
+                    console.error("Error updating guests in Firestore:", error);
+                    showNotification("Erreur lors de la modification", "error");
                 }
             };
 
@@ -970,31 +904,23 @@
                 if (!confirmed) return;
 
                 try {
-                    if (useFirebase && currentUser) {
-                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'rsvps', id);
-                        await deleteDoc(docRef);
-                    } else {
-                        // Local storage delete
-                        activeRSVPs = activeRSVPs.filter(item => item.id !== id);
-                        saveLocalState();
-                        renderAdminList();
-                    }
-                    showNotification(`Famille ${target.name} retirée de la liste.`, "success");
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'rsvps', id);
+                    await deleteDoc(docRef);
+                    showNotification("Famille désinscrite !", "success");
                 } catch (error) {
-                    console.error("Deletion error: ", error);
-                    showNotification("Erreur lors de la suppression.", "error");
+                    console.error("Error deleting from Firestore:", error);
+                    showNotification("Erreur lors de la suppression", "error");
                 }
             };
 
-            // --- STREAMING_CHUNK: CSV Data Exporter ---
+            // Export to CSV Document
             exportCsvBtn.addEventListener('click', () => {
                 if (activeRSVPs.length === 0) {
                     showNotification("Aucune donnée à exporter !", "error");
                     return;
                 }
 
-                // Standardized CSV format
-                let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // Include BOM for proper French accent display in Excel
+                let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // BOM support for French accents in Excel
                 csvContent += "Nom / Famille;Nombre d'inscrits (0 = Absent);Date d'inscription\n";
 
                 activeRSVPs.forEach(item => {
@@ -1006,15 +932,14 @@
                 const encodedUri = encodeURI(csvContent);
                 const downloadLink = document.createElement("a");
                 downloadLink.setAttribute("href", encodedUri);
-                downloadLink.setAttribute("download", `Inscriptions_Fete_Louise_Therese_2026.csv`);
+                downloadLink.setAttribute("download", "Inscriptions_Fete_Louise_Therese_2026.csv");
                 document.body.appendChild(downloadLink);
                 downloadLink.click();
                 document.body.removeChild(downloadLink);
 
-                showNotification("Fichier d'inscriptions téléchargé !", "success");
+                showNotification("Fichier Excel exporté !", "success");
             });
 
-            // HTML Escaper helper
             function escapeHTML(str) {
                 return str.replace(/[&<>'"]/g, 
                     tag => ({
@@ -1027,7 +952,6 @@
                 );
             }
 
-            // Custom Notification System UI
             function showNotification(message, type = "success") {
                 const toast = document.createElement('div');
                 let bgClass = "bg-slate-800 border-slate-700";
@@ -1049,20 +973,17 @@
                 
                 document.getElementById('toast-container').appendChild(toast);
 
-                // Entrance animation
                 setTimeout(() => {
                     toast.style.transform = 'translateX(0)';
                     toast.style.opacity = '1';
                 }, 50);
 
-                // Auto remove trigger
                 const autoRemove = setTimeout(() => {
                     toast.style.transform = 'translateX(12px)';
                     toast.style.opacity = '0';
                     setTimeout(() => toast.remove(), 300);
                 }, 3500);
 
-                // Click to dismiss
                 toast.addEventListener('click', () => {
                     clearTimeout(autoRemove);
                     toast.style.transform = 'translateX(12px)';
